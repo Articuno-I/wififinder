@@ -3,7 +3,7 @@
 <head>
 </head>
 <body>
-   <div>
+   <div id='initform'>
    Generation:
    <form onclick="xyshow()">
       <input type="Radio" name="Gen" value="7" id="sumo"> 7 (SuMo)
@@ -19,15 +19,37 @@
    }
    </script>
    <form  id="XYonly" style="display:none"><input type="checkbox"> Only use pokemon available in X and Y (no ORAS exclusives)</form>
-   </div>
-   <div>
    <form>Friend Code: <input type="text" name="FC" maxlength="12" size="12" />
-   </div>
-   <div>
    <form>Tier: <input type="text" name="tier" size="32" />
+   <button id="sendbutton" type="button" onclick="submit()">Send</button>
+   <script>
+   function submit() {
+      //step 1: check all the data's there
+      //step 2: actually send it
+      //step 3, the unimportant bit and therefore the only part I've coded thus far bc I'm bad lol
+      document.getElementById('chat').style.display='block';
+      document.getElementById('initform').style.display='none';
+      //step 3 part 2: work out who the opponent is, and all that stuff. Also I should probably be going to a "challenging" page before doing this but w/e
+   }
+   </script>
    </div>
-   <div>
-   <button id="sendbutton" type="button">Send</button>
+   <!-- Also I should put in the "current battle requests" stuff somewhere around here, but oh well I'll do that later I guess -->
+   <!-- Here we have the chat for once all that stuff's been dealt with -->
+   <div id="chat" style="display:none">
+      <!-- some chat stuff here I guess -->
+      <script>
+      function chat() {
+         socket.emit('pm', {msg: chatMsg.val()}/*need to work out how the to/from addresses stuff will work */);
+         chatMsg.val('');
+      }
+//Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
+//actually, do I *really* need to deal with it on the server, knowing that?
+      socket.on('pm', function(data) {
+         chatLog.append('<li class="pm">'+data.from+' -> '+data.to+': '+data.msg+'</li>');
+      });
+//yeah I really gotta work out how all this data is gonna be packaged up
+//also need to work out the html to go w this stuff tho shouldn't be too hard
+      </script>
    </div>
 </body>
 </html>
