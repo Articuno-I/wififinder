@@ -6,7 +6,7 @@
    <div id='initform'>
    Generation:
    <form onclick="xyshow()">
-      <input type="Radio" name="Gen" value="7" id="sumo"> 7 (SuMo)
+      <input type="Radio" name="Gen" value="7" id="sumo" checked="checked"> 7 (SuMo)
       <input type="Radio" name="Gen" value="6"> 6 (XY/ORAS)
    </form>
    <script>
@@ -18,28 +18,52 @@
       }
    }
    </script>
-   <form  id="XYonly" style="display:none"><input type="checkbox"> Only use pokemon available in X and Y (no ORAS exclusives)</form>
-   <form>Friend Code: <input type="text" name="FC" maxlength="12" size="12" />
-   <form>Tier: <input type="text" name="tier" size="32" />
+   <form  id="XYonly" style="display:none"><input type="checkbox" id='XY'> Only use pokemon available in X and Y (no ORAS exclusives)</form>
+   <form>Friend Code: <input type="text" id="FC" maxlength="12" size="12" />
+   <form>Tier: <input type="text" id="tier" size="32" />
    <button id="sendbutton" type="button" onclick="submit()">Send</button>
+   <div id='error' style='display:none'>Error: please fill in the form fully</div>
    <script>
    function submit() {
-      //step 1: check all the data's there
+      //step 1: get the data
+      var gen; if (document.getElementById('sumo').checked) {gen = 7;} else {gen = 6;} //could probably use a bool but meh
+      var xy; if (gen === 6 && document.getElementById('XY').checked) {xy = true;} else {xy = false;}
+      var fc = document.getElementById('fc').value;
+      var tier = document.getElementById('tier').value;
+      //step 1.5: make sure all the data's there
+      var info = true;
+      if (fc.length != 12 || fc.match(/^[0-9]+$/) != null) {info = false;}
+      if (!tier.length) {info = false;}
+      if (!info) {
+         document.getElementById('error').style.display='block';
+      } else {
+         var data = {Gen: gen, FC: fc, Tier: tier};
+         if (gen === 6) {data.XY = xy;}
       //step 2: actually send it
-      //step 3, the unimportant bit and therefore the only part I've coded thus far bc I'm bad lol
-      document.getElementById('chat').style.display='block';
-      document.getElementById('initform').style.display='none';
+         socket.emit('request', data);
+      //step 3, the unimportant bit and therefore the part I coded first bc I'm bad lol
+         document.getElementById('initform').style.display='none';
+         document.getElementById('requests').style.display='none';
+         document.getElementById('chat').style.display='block';
       //step 3 part 2: work out who the opponent is, and all that stuff. Also I should probably be going to a "challenging" page before doing this but w/e
+      //also I'll probably find that quite challenging okok brb kms
    }
    </script>
    </div>
-   <!-- Also I should put in the "current battle requests" stuff somewhere around here, but oh well I'll do that later I guess -->
+   <style>
+   table {border-collapse: collapse;}
+   table,th,td {border: 1px solid black;}
+   </style>
+   <table id='requests'><tbody>
+      <tr><td class='tablehead' colspan='6'>Current battle requests</td></tr>
+      <tr class='tablehead'><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge link--></td></tr>
+   </tbody></table>
    <!-- Here we have the chat for once all that stuff's been dealt with -->
    <div id="chat" style="display:none">
       <!-- some chat stuff here I guess -->
       <script>
       function chat() {
-         socket.emit('pm', {msg: chatMsg.val()}/*need to work out how the to/from addresses stuff will work */);
+         socket.emit('pm', chatMsg.val()); /*need to work out how the to/from addresses stuff will work */
          chatMsg.val('');
       }
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
