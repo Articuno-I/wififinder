@@ -1,59 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+   <script src='/scripts.js' />
    <div id='initform'>
    Generation:
    <form onclick="xyshow()">
       <input type="Radio" name="Gen" value="7" id="sumo" checked="checked"> 7 (SuMo)
       <input type="Radio" name="Gen" value="6"> 6 (XY/ORAS)
    </form>
-   <script>
-   function xyshow() {
-      if (!document.getElementById("sumo").checked) {
-         document.getElementById("XYonly").style.display="block";
-      } else {
-         document.getElementById("XYonly").style.display="none";
-      }
-   }
-   </script>
    <form  id="XYonly" style="display:none"><input type="checkbox" id='XY'> Only use pokemon available in X and Y (no ORAS exclusives)</form>
    <form>Friend Code: <input type="text" id="FC" maxlength="12" size="12" />
    <form>Tier: <input type="text" id="tier" size="32" />
    <button id="sendbutton" type="button" onclick="submit()">Send</button>
    <div id='error' style='display:none'>Error: please fill in the form fully</div>
-   <script>
-   function submit() {
-      //step 1: get the data
-      var gen; if (document.getElementById('sumo').checked) {gen = 7;} else {gen = 6;} //could probably use a bool but meh
-      var xy; if (gen === 6 && document.getElementById('XY').checked) {xy = true;} else {xy = false;}
-      var fc = document.getElementById('fc').value;
-      var tier = document.getElementById('tier').value;
-      //step 1.5: make sure all the data's there
-      var info = true;
-      if (fc.length != 12 || fc.match(/^[0-9]+$/) != null) {info = false;}
-      if (!tier.length) {info = false;}
-      if (!info) {
-         document.getElementById('error').style.display='block';
-      } else {
-         var data = {Gen: gen, FC: fc, Tier: tier};
-         if (gen === 6) {data.XY = xy;}
-      //step 2: actually send it
-         socket.emit('request', data);
-      //step 3, the unimportant bit and therefore the part I coded first bc I'm bad lol
-         document.getElementById('initform').style.display='none';
-         document.getElementById('requests').style.display='none';
-         document.getElementById('chat').style.display='block';
-      //step 3 part 2: work out who the opponent is, and all that stuff. Also I should probably be going to a "challenging" page before doing this but w/e
-      //also I'll probably find that quite challenging okok brb kms
-   }
-   </script>
    </div>
-   <style>
-   table {border-collapse: collapse; width: 80%; text-align: center;}
-   table,th,td {border: 1px solid black;}
-   </style>
    <table id='requests'><tbody>
       <tr><td class='tablehead' colspan='6'>Current battle requests</td></tr>
       <tr class='tablehead'><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge link--></td></tr>
@@ -61,19 +24,6 @@
    <!-- Here we have the chat for once all that stuff's been dealt with -->
    <div id="chat" style="display:none">
       <!-- some chat stuff here I guess -->
-      <script>
-      function chat() {
-         socket.emit('pm', chatMsg.val()); /*need to work out how the to/from addresses stuff will work */
-         chatMsg.val('');
-      }
-//Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
-//actually, do I *really* need to deal with it on the server, knowing that?
-      socket.on('pm', function(data) {
-         chatLog.append('<li class="pm">'+data.from+' -> '+data.to+': '+data.msg+'</li>');
-      });
-//yeah I really gotta work out how all this data is gonna be packaged up
-//also need to work out the html to go w this stuff tho shouldn't be too hard
-      </script>
    </div>
 </body>
 </html>
