@@ -17,13 +17,13 @@
    <button id="sendbutton" type="button" onclick="submit()">Send</button>
    <div id='error' style='display:none'>Error: please fill in the form fully</div>
    </div>
-   <table id='requests'><tbody>
+   <table id='requests'><tbody id='reqbody'>
       <tr><td class='tablehead' colspan='6'>Current battle requests</td></tr>
       <tr class='tablehead'><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge link--></td></tr>
    </tbody></table>
    <!-- Here we have the chat for once all that stuff's been dealt with -->
    <div id="chat" style="display:none">
-      <!-- some chat stuff here I guess -->
+      <ul id="messages"></ul>
    </div>
 </body>
 </html>
