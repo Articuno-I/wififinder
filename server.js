@@ -7,7 +7,7 @@ var games = [];
 
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client.html');
-}); //may use something other than __dirname when it's eventually hosted, IDK how this'll work though
+});
 
 app.get('/scripts.js', function(req,res) {
 	res.sendFile(__dirname + '/scripts.js');
@@ -28,9 +28,10 @@ io.on('connection', function(socket) {
 	});
 	socket.on('request', function(data) {
 		//stuff for battle requests. Something along these lines:
+		console.log('received request');
 		var requesting = false;
 		for (var i = 0; i < battlerequests.length; i++) {
-			if (battlerequests[i][requester] == socket) {
+			if (battlerequests[i][requester] == socket) { //should it be .requester? I don't remember
 				requesting = true;
 			}
 			if (!requesting) {
@@ -42,14 +43,21 @@ io.on('connection', function(socket) {
 		}
 	});
 	socket.on('challenge', function(data) {
+/*
+not convinced I want to set up the html serverside, IDK.
+this also requires the username of the challenger, IDK how to:
+a) get that and 
+b) prevent security problems (e.g. sending a request under someone else's username, using CSRF, etc.
+b is pretty minor but I feel like it'd be bad not to have an answer to it.
+*/
 		var html = "<tr id="+data.username+"><td>"+data.username+"</td><td>"+data.Gen+"</td><td>"+data.Tier+"</td><td>"+data.XY+"</td><td>"+data.FC+"</td><td>"+/*button*/"</tr>";
-		//then broadcast this to everyone
+		io.emit('challenge',html);
 		battlerequests.push(html);
 	});
-	//maybe add something to accept challenges?
+	//Something for challenging & accepting challenges here, IDK how it'll work with two people needing to talk to server. 
 });
 
 
-http.listen(8000,function() {
+http.listen(8000, function() {
 	console.log('listening on *:8000');
 });
