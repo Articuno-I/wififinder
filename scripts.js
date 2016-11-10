@@ -1,3 +1,5 @@
+var socket = io();
+
 function xyshow() {
    if (!document.getElementById("sumo").checked) {
       document.getElementById("XYonly").style.display="block";
@@ -19,8 +21,7 @@ function submit() {
    if (!info) {
       document.getElementById('error').style.display='block';
    } else {
-      var data = {Gen: gen, FC: fc, Tier: tier};
-      if (gen === 6) {data.XY = xy;}
+      var data = {Gen: gen, FC: fc, Tier: tier, XY: xy};
    //step 2: actually send it
       socket.emit('request', data);
    //step 3, the unimportant bit and therefore the part I coded first bc I'm bad lol
@@ -33,12 +34,16 @@ function submit() {
 
 function chat() {
    socket.emit('pm', chatMsg.val()); /*need to work out how the to/from addresses stuff will work */
-   chatMsg.val('');
+   chatMsg.val(''); //also need to add in messaging form
 }
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
-//actually, do I *really* need to deal with it on the server, knowing that?
+//actually, do I *really* need to deal with it on the server, knowing that? <_<
 socket.on('pm', function(data) {
-   chatLog.append('<li class="pm">'+data.from+' -> '+data.to+': '+data.msg+'</li>');
+   document.getElementById('messages').innerHTML += data; 
+   //probably need to manipulate data, IDK whether to do that here or server though.
 });
-//yeah I really gotta work out how all this data is gonna be packaged up
-//also need to work out the html to go w this stuff tho shouldn't be too hard
+   
+socket.on('request', function(data) {
+   var reqtable = document.getElementById('reqbody');
+   reqtable.innerHTML += data;//manipulating it serverside probably easiest? IDK
+}
