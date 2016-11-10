@@ -2,6 +2,9 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var battlerequests = [];
+var games = [];
+
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client.html');
 }); //may use something other than __dirname when it's eventually hosted, IDK how this'll work though
@@ -14,7 +17,7 @@ app.get('/styles.css', function(req,res) {
 	res.sendFile(__dirname + '/styles.css');
 });
 
-o.on('connection', function(socket) {
+io.on('connection', function(socket) {
 	socket.on('pm', function(data) {
 /*should do the following:
 1. search for socket in games
@@ -26,7 +29,7 @@ o.on('connection', function(socket) {
 	socket.on('request', function(data) {
 		//stuff for battle requests. Something along these lines:
 		var requesting = false;
-		for (var i = 0; i < battlerequests.length(); i++) {
+		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i][requester] == socket) {
 				requesting = true;
 			}
@@ -39,7 +42,9 @@ o.on('connection', function(socket) {
 		}
 	});
 	socket.on('challenge', function(data) {
-		//do stuff
+		var html = "<tr id="+data.username+"><td>"+data.username+"</td><td>"+data.Gen+"</td><td>"+data.Tier+"</td><td>"+data.XY+"</td><td>"+data.FC+"</td><td>"+/*button*/"</tr>";
+		//then broadcast this to everyone
+		battlerequests.push(html);
 	});
 	//maybe add something to accept challenges?
 });
