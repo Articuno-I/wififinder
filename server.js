@@ -31,11 +31,11 @@ io.on('connection', function(socket) {
 		console.log('received request');
 		var requesting = false;
 		for (var i = 0; i < battlerequests.length; i++) {
-			if (battlerequests[i][requester] == socket) { //should it be .requester? I don't remember
+			if (battlerequests[i].requester == socket) {
 				requesting = true;
 			}
 			if (!requesting) {
-				battlerequests.push({socket,data});
+				battlerequests.push({requester:socket,request:data});
 //here need to add battle request to html, also need to find smogon username for this if not earlier, to make it human-readable among other things.
 			} else {
 //do stuff to stop them requesting multiple games at once
