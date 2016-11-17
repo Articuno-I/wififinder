@@ -4,34 +4,34 @@
    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-   <script src="/socket.io/socket.io.js"></script>
-   <script src="/scripts.js"></script>
-   <div id="login">
-      <form>Please choose a name: <input type="text" id="name" maxlength="20" />
-      <button id="choosename" onclick="sendname()">Choose</button>
-      <div id="name_info" style="display:none">Sending...</div>
-   </div>
-   <div id="login_name" style="display:none">You are logged in as </div>
-   <div id="initform" style="display:none">
-   Generation:
-   <form onclick="xyshow()">
-      <input type="Radio" name="Gen" value="7" id="sumo" checked="checked"> 7 (SuMo)
-      <input type="Radio" name="Gen" value="6"> 6 (XY/ORAS)
-   </form>
-   <form  id="XYonly" style="display:none"><input type="checkbox" id='XY'> Only use pokemon available in X and Y (no ORAS exclusives)</form>
-   <form>Friend Code: <input type="text" id="FC" maxlength="12" size="12" />
-   <form>Tier: <input type="text" id="tier" size="32" />
-   <button id="sendbutton" type="button" onclick="_submit()">Send</button>
-   <div id="error" style="display:none">Error: please fill in the form fully</div>
-   </div>
-   <table id="Requests"><tbody id="reqbody">
-      <tr><td class="tablehead" colspan="6">Current battle requests</td></tr>
-      <tr class="tablehead"><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge link--></td></tr>
-   </tbody></table>
-   <!-- Here we have the chat for once all that stuff's been dealt with -->
-   <div id="chat" style="display:none">
-      <ul id="messages"></ul>
-      <form>Chat: <input type="text" id="chatmsg" /><button id="chatbutton" onclick="chat()">Chat</button>
-   </div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/scripts.js"></script>
+	<div id="login">
+		<form>Please choose a name: <input type="text" id="name" maxlength="20" />
+		<button id="choosename" onclick="sendname()">Choose</button>
+		<div id="name_info" style="display:none">Sending...</div>
+	</div>
+	<div id="login_name" style="display:none">You are logged in as </div>
+	<div id="initform" style="display:none">
+		Generation:
+		<form onclick="xyshow()">
+			<input type="Radio" name="Gen" value="7" id="sumo" checked="checked"> 7 (SuMo)
+			<input type="Radio" name="Gen" value="6"> 6 (XY/ORAS)
+		</form>
+		<form  id="XYonly" style="display:none"><input type="checkbox" id='XY'> Only use pokemon available in X and Y (no ORAS exclusives)</form>
+		<form>Friend Code: <input type="text" id="FC" maxlength="12" size="12" />
+		<form>Tier: <input type="text" id="tier" size="32" />
+		<button id="sendbutton" type="button" onclick="_submit()">Send</button>
+		<div id="error" style="display:none">Error: please fill in the form fully</div>
+	</div>
+	<table id="Requests"><tbody id="reqbody">
+		<tr><td class="tablehead" colspan="6">Current battle requests</td></tr>
+		<tr class="tablehead"><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge link--></td></tr>
+	</tbody></table>
+	<!-- Here we have the chat for once all that stuff's been dealt with -->
+	<div id="chat" style="display:none">
+		<ul id="messages"></ul>
+		<form>Chat: <input type="text" id="chatmsg" /><button id="chatbutton" onclick="chat()">Chat</button>
+	</div>
 </body>
 </html>
