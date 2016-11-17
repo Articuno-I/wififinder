@@ -2,7 +2,8 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var battlerequests = [];
+var connections = [];
+var battlerequests = []; //maybe battlerequests = {socket:data}?
 var games = [];
 
 app.get('/', function(req, res) {
@@ -18,7 +19,23 @@ app.get('/styles.css', function(req,res) {
 });
 
 io.on('connection', function(socket) {
+	socket.on('name', function(data) {
+		console.log('debug: recieved name');
+		//code breaks somewhere after this point, may be clientside
+		var taken = false;
+		for (var i = 0; i < connections.length; i++) {
+			if (data == connections[i].Name) {taken = true;}
+		}
+		if (taken) {
+			socket.emit('nametaken','');
+		} else {
+			connections.push({Name: data, Socket: socket});
+			socket.emit('nameaccepted', battlerequests);
+		}
+	});
+
 	socket.on('pm', function(data) {
+		console.log('debug: recieved pm');
 /*should do the following:
 1. search for socket in games
 2. get opponent's socket from here
@@ -28,18 +45,18 @@ io.on('connection', function(socket) {
 	});
 	socket.on('request', function(data) {
 		//stuff for battle requests. Something along these lines:
-		console.log('received request');
+		console.log('debug: recieved request');
 		var requesting = false;
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester == socket) {
 				requesting = true;
 			}
-			if (!requesting) {
-				battlerequests.push({requester:socket,request:data});
+		}
+		if (!requesting) {
+			battlerequests.push({requester:socket,request:data});
 //here need to add battle request to html, also need to find smogon username for this if not earlier, to make it human-readable among other things.
-			} else {
+		} else {
 //do stuff to stop them requesting multiple games at once
-			}
 		}
 	});
 	socket.on('challenge', function(data) {
