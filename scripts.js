@@ -1,5 +1,10 @@
 var socket = io();
 
+var debugging = true;
+function debug(text) {
+	if (debugging) {console.log('debug: '+text);}
+}
+
 function xyshow() {
 //could perhaps make sure it's still in the submitting phase rather than battling? Seems kinda unnecessary tho.
 	if (!document.getElementById("sumo").checked) {
@@ -10,10 +15,12 @@ function xyshow() {
 }
 
 var name; //global scope so I don't need to ask the server for it later maybe
-function sendname() {
+function _sendname() {
+	debug('sending name');
 	name = document.getElementById('name').value;
 	var info = document.getElementById('name_info');
 	if (!name.length) {
+		debug('name not found');
 		info.innerHTML = 'Please input a name.'; //probably be better to just make it a variable but meh.
 		info.style.display = 'block';
 		return false;
@@ -23,9 +30,11 @@ function sendname() {
 	info.style.display = 'block';
 }
 socket.on('nametaken', function() {
+	debug('name unavailable');
 	document.getElementById('name_info').innerHTML = 'Sorry, that name was taken. Please try another one.';
 });
 socket.on('nameaccepted', function(data) {
+	debug('name accepted');
 	document.getElementById('login').style.display = 'none';
 	document.getElementById('login_name').innerHTML = 'You are logged in as '+name;
 	document.getElementById('login_name').style.display = 'block';
