@@ -6,6 +6,12 @@ var connections = [];
 var battlerequests = []; //maybe battlerequests = {socket:data}?
 var games = [];
 
+
+var debugging = true;
+function debug(text) {
+	if (debugging) {console.log('debug: '+text);}
+}
+
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client.html');
 });
@@ -20,14 +26,15 @@ app.get('/styles.css', function(req,res) {
 
 io.on('connection', function(socket) {
 	socket.on('name', function(data) {
-		console.log('debug: recieved name');
-		//code breaks somewhere after this point, may be clientside
+		debug('recieved name');
 		var taken = false;
 		for (var i = 0; i < connections.length; i++) {
 			if (data == connections[i].Name) {taken = true;}
 		}
 		if (taken) {
 			socket.emit('nametaken','');
+//should probably put in check to make sure the socket doesn't already have a name
+//code breaks somewhere after this point, may be clientside
 		} else {
 			connections.push({Name: data, Socket: socket});
 			socket.emit('nameaccepted', battlerequests);
@@ -35,7 +42,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('pm', function(data) {
-		console.log('debug: recieved pm');
+		debug('recieved pm');
 /*should do the following:
 1. search for socket in games
 2. get opponent's socket from here
@@ -45,7 +52,7 @@ io.on('connection', function(socket) {
 	});
 	socket.on('request', function(data) {
 		//stuff for battle requests. Something along these lines:
-		console.log('debug: recieved request');
+		debug('recieved request');
 		var requesting = false;
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester == socket) {
@@ -53,25 +60,17 @@ io.on('connection', function(socket) {
 			}
 		}
 		if (!requesting) {
-			battlerequests.push({requester:socket,request:data});
+			var html = "<tr id="+data.username+"><td>"+data.username+"</td><td>"+data.Gen+"</td><td>"+data.Tier+"</td><td>"+data.XY+"</td><td>"+data.FC+"</td><td>"+/*button*/"</tr>";
+			io.emit('request',html);
+			battlerequests.push({requester:socket,request:html});
 //here need to add battle request to html, also need to find smogon username for this if not earlier, to make it human-readable among other things.
 		} else {
 //do stuff to stop them requesting multiple games at once
 		}
 	});
 	socket.on('challenge', function(data) {
-/*
-not convinced I want to set up the html serverside, IDK.
-this also requires the username of the challenger, IDK how to:
-a) get that and 
-b) prevent security problems (e.g. sending a request under someone else's username, using CSRF, etc.
-b is pretty minor but I feel like it'd be bad not to have an answer to it.
-*/
-		var html = "<tr id="+data.username+"><td>"+data.username+"</td><td>"+data.Gen+"</td><td>"+data.Tier+"</td><td>"+data.XY+"</td><td>"+data.FC+"</td><td>"+/*button*/"</tr>";
-		io.emit('challenge',html);
-		battlerequests.push(html);
+//stuff
 	});
-	//Something for challenging & accepting challenges here, IDK how it'll work with two people needing to talk to server. 
 });
 
 
