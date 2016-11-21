@@ -82,7 +82,7 @@ io.on('connection', function(socket) {
 		}
 		if (!requesting) {
 			var reqname = getName(socket);
-			var html = '<tr id='+reqname+'><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+data.XY+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
+			var html = '<tr id="'+reqname+'"><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+data.XY+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
 			io.emit('request',html);
 			battlerequests.push({requester:socket,request:html});
 		} else {
