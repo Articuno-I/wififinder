@@ -69,7 +69,7 @@ function _submit() {
 	//need to make sure people can't challenge while requesting, this needs to be done both clientside and serverside
 	document.getElementById('initform').style.display = 'none';
 	var chaldiv = document.getElementById('requesting');
-	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
+	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc+'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
 	chaldiv.style.display = 'block';
 }
 socket.on('request', function(data) {
@@ -81,10 +81,9 @@ socket.on('request', function(data) {
 	}
 });
 socket.on('cancelrequest', function(data) {
-	document.getElementById(data).outerHTML='';
-//Need to make sure people don't muck this up by having a name equal to the ID of an element, options include making all the id names really weird, adding something to the id of each row to make it >20 characters, and restricting which names can be chosen.
+	document.getElementById(data+'requesttablerow').outerHTML=''; //will this work if that request isn't found (e.g. if it's your own request)? Need to test this.
 //Will also need to make sure apostraphes and quotation marks are escaped from names, as well as html tags.
-}
+});
 
 function cancelrequest() {
 	socket.emit('cancelrequest', '');
