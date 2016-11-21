@@ -66,7 +66,15 @@ function _submit() {
 	//step 2: actually send it
 	socket.emit('request', data);
 	//step 3, change what's on screen.
-	
+	//need to make sure people can't challenge while requesting, this needs to be done both clientside and serverside
+}
+
+function challenge(chalname) {
+	var fc = document.getElementById('FC').value;
+	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
+		return false; //insert stuff to explain why you can't challenge without a fc yada yada
+	}
+	socket.emit('challenge', fc);
 }
 
 function chat() {
