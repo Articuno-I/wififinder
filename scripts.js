@@ -6,9 +6,9 @@ function debug(text) {
 }
 
 function xyshow() {
-//could perhaps make sure it's still in the submitting phase rather than battling? Seems kinda unnecessary tho.
+//will probably remove this, all the "xy only" stuff could just be dealt with in the tier section
 	if (!document.getElementById("sumo").checked) {
-		document.getElementById("XYonly").style.display="block";
+		document.getElementById("XYonly").style.display = "block";
 	} else {
 		document.getElementById("XYonly").style.display="none";
 	}
@@ -59,7 +59,7 @@ function _submit() {
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {info = false;}
 	if (!tier.length) {info = false;}
 	if (!info) {
-		document.getElementById('error').style.display='block';
+		document.getElementById('error').style.display = 'block';
 		return false;
 	}
 	var data = {Gen: gen, FC: fc, Tier: tier, XY: xy};
@@ -67,22 +67,37 @@ function _submit() {
 	socket.emit('request', data);
 	//step 3, change what's on screen.
 	//need to make sure people can't challenge while requesting, this needs to be done both clientside and serverside
+	document.getElementById('initform').style.display = 'none';
+	var chaldiv = document.getElementById('requesting');
+	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
+	chaldiv.style.display = 'block';
 }
 socket.on('request', function(data) {
 	var reqtable = document.getElementById('reqbody');
 	if (data.indexOf(name) == 8) { 
-		debug('own request has been recieved');
-		//need to go to "requesting" screen here maybe?
+		debug('recieved own request');
 	} else {
 		reqtable.innerHTML += data;
 	}
 });
+socket.on('cancelrequest', function(data) {
+	document.getElementById(data).outerHTML='';
+//Need to make sure people don't muck this up by having a name equal to the ID of an element, options include making all the id names really weird, adding something to the id of each row to make it >20 characters, and restricting which names can be chosen.
+//Will also need to make sure apostraphes and quotation marks are escaped from names, as well as html tags.
+}
+
+function cancelrequest() {
+	socket.emit('cancelrequest', '');
+	document.getElementById('requesting').style.display = 'none';
+	document.getElementById('initform').style.display = 'block';
+}
 
 function challenge(chalname) {
 	var fc = document.getElementById('FC').value;
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
 		return false; //insert stuff to explain why you can't challenge without a fc yada yada
 	}
+	//may include stuff to prevent challenging while requesting here, definitely need that code server-side though.
 	socket.emit('challenge', fc);
 }
 
