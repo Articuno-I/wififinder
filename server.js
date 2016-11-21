@@ -1,12 +1,33 @@
+//import modules
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+//define global variables
 var connections = [];
 var battlerequests = []; //maybe battlerequests = {socket:data}?
 var games = [];
 
+//functions to go with global variables
+function getName(socket) {
+	for (var i = 0; i < connections.length; i++) {
+		if (connections[i].Socket === socket) {return connections[i].Name;}
+	} return false;
+}
 
+function getSocket(name) {
+	for (var i = 0; i < connections.length; i++) {
+		if (connections[i].Name == name) {return connections[i].Socket;}
+	} return false;
+}
+
+def getRequest(socket) {
+	for (var i = 0; i < battlerequests.length; i++) {
+		if (battlerequests[i].requester == socket) {return battlerequests[i];}
+	} return false;
+}
+
+//debugging code
 var debugging = true;
 function debug(text) {
 	if (debugging) {console.log('debug: '+text);}
@@ -60,10 +81,10 @@ io.on('connection', function(socket) {
 			}
 		}
 		if (!requesting) {
-			var html = "<tr id="+data.username+"><td>"+data.username+"</td><td>"+data.Gen+"</td><td>"+data.Tier+"</td><td>"+data.XY+"</td><td>"+data.FC+"</td><td>"+/*button*/"</tr>";
+			var reqname = getName(socket);
+			var html = '<tr id='+reqname+'><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+data.XY+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
 			io.emit('request',html);
 			battlerequests.push({requester:socket,request:html});
-//here need to add battle request to html, also need to find smogon username for this if not earlier, to make it human-readable among other things.
 		} else {
 //do stuff to stop them requesting multiple games at once
 		}
