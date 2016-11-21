@@ -21,7 +21,7 @@ function getSocket(name) {
 	} return false;
 }
 
-def getRequest(socket) {
+function getRequest(socket) {
 	for (var i = 0; i < battlerequests.length; i++) {
 		if (battlerequests[i].requester == socket) {return battlerequests[i];}
 	} return false;
@@ -90,6 +90,7 @@ io.on('connection', function(socket) {
 		}
 	});
 	socket.on('challenge', function(data) {
+		debug('recieved challenge');
 //stuff
 	});
 });
