@@ -68,6 +68,15 @@ function _submit() {
 	//step 3, change what's on screen.
 	//need to make sure people can't challenge while requesting, this needs to be done both clientside and serverside
 }
+socket.on('request', function(data) {
+	var reqtable = document.getElementById('reqbody');
+	if (data.indexOf(name) == 8) { 
+		debug('own request has been recieved');
+		//need to go to "requesting" screen here maybe?
+	} else {
+		reqtable.innerHTML += data;
+	}
+});
 
 function challenge(chalname) {
 	var fc = document.getElementById('FC').value;
@@ -85,8 +94,4 @@ function chat() {
 //actually, do I *really* need to deal with it on the server, knowing that?
 socket.on('pm', function(data) {
 	document.getElementById('messages').innerHTML += data; //data needs to be manipulated on server but IDK if I need to on clientside as well
-});
-socket.on('request', function(data) {
-	var reqtable = document.getElementById('reqbody');
-	reqtable.innerHTML += data; //manipulating it serverside probably easiest? IDK
 });
