@@ -55,10 +55,9 @@ io.on('connection', function(socket) {
 		if (taken) {
 			socket.emit('nametaken','');
 //should probably put in check to make sure the socket doesn't already have a name
-//code breaks somewhere after this point, may be clientside
 		} else {
 			connections.push({Name: data, Socket: socket});
-			socket.emit('nameaccepted', battlerequests);
+			socket.emit('nameaccepted', battlerequests); //this appears to break things if there exists at least one battlerequest
 		}
 	});
 
