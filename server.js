@@ -46,6 +46,9 @@ app.get('/styles.css', function(req,res) {
 });
 
 io.on('connection', function(socket) {
+	for (var i = 0; i < battlerequests.length; i++) {
+		socket.emit('request',battlerequests[i].request);
+	}
 	socket.on('name', function(data) {
 		debug('recieved name');
 		var taken = false;
@@ -57,7 +60,7 @@ io.on('connection', function(socket) {
 //should probably put in check to make sure the socket doesn't already have a name
 		} else {
 			connections.push({Name: data, Socket: socket});
-			socket.emit('nameaccepted', battlerequests); //this appears to break things if there exists at least one battlerequest
+			socket.emit('nameaccepted', '');
 		}
 	});
 
