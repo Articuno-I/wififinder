@@ -33,19 +33,13 @@ socket.on('nametaken', function() {
 	debug('name unavailable');
 	document.getElementById('name_info').innerHTML = 'Sorry, that name was taken. Please try another one.';
 });
-socket.on('nameaccepted', function(data) {
+socket.on('nameaccepted', function() {
 	debug('name accepted');
 	document.getElementById('login').style.display = 'none';
 	document.getElementById('login_name').innerHTML = 'You are logged in as '+name;
 	document.getElementById('login_name').style.display = 'block';
 	document.getElementById('initform').style.display = 'block';
 	document.getElementById('Requests').style.display = 'block';
-//use data to display current requests
-//untested, probably doesn't work but idk might be lucky.
-	var reqtable = document.getElementById('reqbody');
-	for (var i = 0; i < data.length; i++) {
-		reqtable.innerHTML += data[i];
-	}
 });
 
 function _submit() {
