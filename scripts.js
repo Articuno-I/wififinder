@@ -75,8 +75,10 @@ socket.on('request', function(data) {
 	}
 });
 socket.on('cancelrequest', function(data) {
-	document.getElementById(data+'requesttablerow').outerHTML=''; //will this work if that request isn't found (e.g. if it's your own request)? Need to test this.
+	if (data != name) {
+		document.getElementById(data+'requesttablerow').outerHTML=''; //will this work if that request isn't found (e.g. if it's your own request)? Need to test this.
 //Will also need to make sure apostraphes and quotation marks are escaped from names, as well as html tags.
+	}
 });
 
 function cancelrequest() {
