@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 
 //define global variables
 var connections = [];
-var battlerequests = []; //maybe battlerequests = {socket:data}?
+var battlerequests = [];
 var games = [];
 
 //functions to go with global variables
@@ -82,12 +82,17 @@ io.on('connection', function(socket) {
 		}
 		if (!requesting) {
 			var reqname = getName(socket);
-			var html = '<tr id="'+reqname+'"><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+data.XY+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
+			var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
+			var html = '<tr id="'+reqname+'requesttablerow"><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
 			io.emit('request',html);
 			battlerequests.push({requester:socket,request:html});
 		} else {
 //do stuff to stop them requesting multiple games at once
 		}
+	});
+	socket.on('cancelrequest', function(data) {
+		debug('recieved request cancellation');
+		io.emit('cancelrequest', data);
 	});
 	socket.on('challenge', function(data) {
 		debug('recieved challenge');
