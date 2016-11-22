@@ -92,9 +92,9 @@ io.on('connection', function(socket) {
 //do stuff to stop them requesting multiple games at once
 		}
 	});
-	socket.on('cancelrequest', function(data) {
+	socket.on('cancelrequest', function() {
 		debug('recieved request cancellation');
-		io.emit('cancelrequest', data);
+		io.emit('cancelrequest', getName(socket)); //have to get name serverside or you can cancel other people's requests
 	});
 	socket.on('challenge', function(data) {
 		debug('recieved challenge');
