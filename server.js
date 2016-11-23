@@ -98,7 +98,9 @@ io.on('connection', function(socket) {
 	});
 	socket.on('challenge', function(data) {
 		debug('recieved challenge');
-//stuff
+//check if there's a request here? Possibly check if other people are challenging, IDK
+		var toChallenge = getSocket(data.toChallenge);
+		toChallenge.emit('challenge', {user:getName(socket), FC:data.FC});
 	});
 });
 
