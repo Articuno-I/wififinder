@@ -1,5 +1,7 @@
 var socket = io();
 
+var opponent = {Name:'', FC:''};
+
 var debugging = true;
 function debug(text) {
 	if (debugging) {console.log('debug: '+text);}
@@ -74,6 +76,12 @@ socket.on('request', function(data) {
 		reqtable.innerHTML += data;
 	}
 });
+
+function cancelrequest() {
+	socket.emit('cancelrequest', '');
+	document.getElementById('requesting').style.display = 'none';
+	document.getElementById('initform').style.display = 'block';
+}
 socket.on('cancelrequest', function(data) {
 	if (data != name) {
 		document.getElementById(data+'requesttablerow').outerHTML=''; //will this work if that request isn't found (e.g. if it's your own request)? Need to test this.
@@ -81,19 +89,22 @@ socket.on('cancelrequest', function(data) {
 	}
 });
 
-function cancelrequest() {
-	socket.emit('cancelrequest', '');
-	document.getElementById('requesting').style.display = 'none';
-	document.getElementById('initform').style.display = 'block';
-}
-
 function challenge(chalname) {
 	var fc = document.getElementById('FC').value;
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
 		return false; //insert stuff to explain why you can't challenge without a fc yada yada
 	}
 	//may include stuff to prevent challenging while requesting here, definitely need that code server-side though.
-	socket.emit('challenge', fc);
+	socket.emit('challenge', {toChallenge: chalname, FC: fc});
+}
+socket.on('challenge', function(data) {
+	//do stuff
+});
+
+function accept(chalname) {
+	socket.emit('accept', chalname);
+	opponent.Name = chalname;
+//set opponent's fc. Have this as an input?
 }
 
 function chat() {
