@@ -11,9 +11,15 @@ Difficulties:
 * Actually doing stuff bc schoolwork and stuff
 * Working out how the server's storing all the data, getting the functions in place to move data between the two and all that stuff
 
+Things I'm working on currently:
+* Challenging people, accepting those challenges, making sure all the data (e.g. FCs) is transferred
+* Battle system including chat, knowing who's battling whom, etc.
+* Disconnects, making sure the array of current battles doesn't get infinitely long etc.
+ * IDK how to allow people back into battles if they DC, guess that'll just be something I can't deal with most likely.
+
 Future problems:
 * Ending battles, people dc'ing, etc. are all potentially annoying problems
-* Making it look ok, hopefully someone else can do that
+* Making it look ok, hopefully someone else can deal with CSS and stuff
 * Getting it integrated into smogon, again hopefully someone else can handle that stuff
 
 ### If you're reading this and thinking to yourself "I could help out with that", please feel free.
