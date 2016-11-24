@@ -67,6 +67,7 @@ function _submit() {
 	var chaldiv = document.getElementById('requesting');
 	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc+'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
 	chaldiv.style.display = 'block';
+	document.getElementById('challenges').style.display = 'block';
 }
 socket.on('request', function(data) {
 	var reqtable = document.getElementById('reqbody');
@@ -97,14 +98,35 @@ function challenge(chalname) {
 	//may include stuff to prevent challenging while requesting here, definitely need that code server-side though.
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
 }
+var challenges = [];
 socket.on('challenge', function(data) {
-	//do stuff
+	challenges.push({challenger:data.user, FC:data.FC});
+	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+data.user')">Accept</button><button onclick="decline('+data.user')">Decline</button></p>';
 });
 
 function accept(chalname) {
 	socket.emit('accept', chalname);
 	opponent.Name = chalname;
-//set opponent's fc. Have this as an input?
+	for (var i = 0; i < challenges.length; i++) {
+		if (challenges[i].challenger === chalname) {
+			opponent.FC = challenges[i].FC;
+			challenges.splice(i,1);
+		}
+	}
+	while (challenges.length) {
+		decline(challenges[i].challenger);
+	}
+//change html stuff (partially done)
+	document.getElementById('challenges').innerHTML = '<p>Waiting for challenges...</p>'
+	document.getElementById('challenges').style.display = 'none';
+	challenges = [];
+}
+function decline(chalname) {
+	socket.emit('decline', chalname);
+	for (var i = 0; i < challenges.length; i++) {
+		if (challenges[i].challenger === chalname) {challenges.splice(i,1);}
+	}
+	document.getElementById(chalname+'challengerequest').outerHTML = '';
 }
 
 function chat() {
