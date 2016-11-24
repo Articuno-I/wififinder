@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
 		debug('recieved request');
 		var requesting = false;
 		for (var i = 0; i < battlerequests.length; i++) {
-			if (battlerequests[i].requester == socket) {
+			if (battlerequests[i].requester === socket) {
 				requesting = true;
 			}
 		}
@@ -95,12 +95,27 @@ io.on('connection', function(socket) {
 	socket.on('cancelrequest', function() {
 		debug('recieved request cancellation');
 		io.emit('cancelrequest', getName(socket)); //have to get name serverside or you can cancel other people's requests
+		for (var i = 0; i < battlerequests.length; i++) {
+			if (battlerequests[i].requester === socket) {battlerequests.splice(i,1);}
+		}
 	});
 	socket.on('challenge', function(data) {
 		debug('recieved challenge');
 //check if there's a request here? Possibly check if other people are challenging, IDK
 		var toChallenge = getSocket(data.toChallenge);
 		toChallenge.emit('challenge', {user:getName(socket), FC:data.FC});
+	});
+	socket.on('disconnect', function() {
+		debug('a user disconnected');
+		for (var i = 0; i < connections.length; i++) {
+			if (connections[i].Socket === socket) {connections.splice(i,1);}
+		}
+		for (var i = 0; i < battlerequests.length; i++) {
+			if (battlerequests[i].requester === socket) {battlerequests.splice(i,1);}
+		}
+		for (var i = 0; i < games.length; i++) {
+			//code
+		}//do I even need a games array? IDK
 	});
 });
 
