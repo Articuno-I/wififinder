@@ -101,7 +101,7 @@ function challenge(chalname) {
 var challenges = [];
 socket.on('challenge', function(data) {
 	challenges.push({challenger:data.user, FC:data.FC});
-	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+data.user+')">Accept</button><button onclick="decline('+data.user+')">Decline</button></p>';
+	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+"'"+data.user+"'"+')">Accept</button><button onclick="decline('+"'"+data.user+"'"+')">Decline</button></p>';
 });
 
 function accept(chalname) {
