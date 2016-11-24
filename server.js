@@ -52,16 +52,28 @@ io.on('connection', function(socket) {
 	socket.on('name', function(data) {
 		debug('recieved name');
 		var taken = false;
+		var usedsocket = false;
 		for (var i = 0; i < connections.length; i++) {
 			if (data == connections[i].Name) {taken = true;}
+			if (socket == connections[i].Socket) {usedsocket = true;}
 		}
 		if (taken) {
-			socket.emit('nametaken','');
-//should probably put in check to make sure the socket doesn't already have a name
-		} else {
-			connections.push({Name: data, Socket: socket});
-			socket.emit('nameaccepted', '');
+			socket.emit('namenotaccept','Sorry, that name was taken. Please try another one.');
+			return false;
 		}
+		if (usedSocket) {
+			socket.emit('Error','This socket is already connected.');
+			debug("socket was already connected so couldn't choose name");
+			return false;
+		}
+		if (! /^[a-zA-Z0-9_ .,]+$/.test(data)) {
+			socket.emit('namenotaccept','Please only use alphanumeric characters, spaces, and full stops.');
+			debug('name had illegal characters');
+			return false;
+		}
+		connections.push({Name: data, Socket: socket});
+		socket.emit('nameaccepted', '');
+		debug('accepted name');
 	});
 
 	socket.on('pm', function(data) {
