@@ -61,7 +61,7 @@ io.on('connection', function(socket) {
 			socket.emit('namenotaccept','Sorry, that name was taken. Please try another one.');
 			return false;
 		}
-		if (usedSocket) {
+		if (usedsocket) {
 			socket.emit('Error','This socket is already connected.');
 			debug("socket was already connected so couldn't choose name");
 			return false;
