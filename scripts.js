@@ -101,7 +101,7 @@ function challenge(chalname) {
 var challenges = [];
 socket.on('challenge', function(data) {
 	challenges.push({challenger:data.user, FC:data.FC});
-	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+data.user')">Accept</button><button onclick="decline('+data.user')">Decline</button></p>';
+	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+data.user+')">Accept</button><button onclick="decline('+data.user+')">Decline</button></p>';
 });
 
 function accept(chalname) {
@@ -117,7 +117,7 @@ function accept(chalname) {
 		decline(challenges[i].challenger);
 	}
 //change html stuff (partially done)
-	document.getElementById('challenges').innerHTML = '<p>Waiting for challenges...</p>'
+	document.getElementById('challenges').innerHTML = '<p>Waiting for challenges...</p>';
 	document.getElementById('challenges').style.display = 'none';
 	challenges = [];
 }
