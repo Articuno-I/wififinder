@@ -31,9 +31,9 @@ function _sendname() {
 	info.innerHTML = 'Sending...';
 	info.style.display = 'block';
 }
-socket.on('nametaken', function() {
-	debug('name unavailable');
-	document.getElementById('name_info').innerHTML = 'Sorry, that name was taken. Please try another one.';
+socket.on('namenotaccepted', function(data) {
+	debug("name wasn't accepted");
+	document.getElementById('name_info').innerHTML = data;
 });
 socket.on('nameaccepted', function() {
 	debug('name accepted');
@@ -137,4 +137,10 @@ function chat() {
 //actually, do I *really* need to deal with it on the server, knowing that?
 socket.on('pm', function(data) {
 	document.getElementById('messages').innerHTML += data; //data needs to be manipulated on server but IDK if I need to on clientside as well
+});
+
+socket.on('Error', function(data) {
+	if (typeof data === 'string') {console.error(data);}
+	else {console.error('Unknown error from server.');}
+	//probably make this display somewhere in the HTML too, idk
 });
