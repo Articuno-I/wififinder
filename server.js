@@ -58,7 +58,7 @@ io.on('connection', function(socket) {
 			if (socket == connections[i].Socket) {usedsocket = true;}
 		}
 		if (taken) {
-			socket.emit('namenotaccept','Sorry, that name was taken. Please try another one.');
+			socket.emit('namenotaccepted','Sorry, that name was taken. Please try another one.');
 			return false;
 		}
 		if (usedsocket) {
@@ -67,7 +67,7 @@ io.on('connection', function(socket) {
 			return false;
 		}
 		if (! /^[a-zA-Z0-9_ .,]+$/.test(data)) {
-			socket.emit('namenotaccept','Please only use alphanumeric characters, spaces, and full stops.');
+			socket.emit('namenotaccepted','Please only use alphanumeric characters, spaces, and full stops.');
 			debug('name had illegal characters');
 			return false;
 		}
