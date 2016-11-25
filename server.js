@@ -51,20 +51,16 @@ io.on('connection', function(socket) {
 	}
 	socket.on('name', function(data) {
 		debug('recieved name');
-		var taken = false;
-		var usedsocket = false;
 		for (var i = 0; i < connections.length; i++) {
-			if (data == connections[i].Name) {taken = true;}
-			if (socket == connections[i].Socket) {usedsocket = true;}
-		}
-		if (taken) {
-			socket.emit('namenotaccepted','Sorry, that name was taken. Please try another one.');
-			return false;
-		}
-		if (usedsocket) {
-			socket.emit('Error','This socket is already connected.');
-			debug("socket was already connected so couldn't choose name");
-			return false;
+			if (socket == connections[i].Socket) {
+				socket.emit('Error','This socket is already connected.');
+				debug("socket was already connected so couldn't choose name");
+				return false;
+			}
+			if (data == connections[i].Name) {
+				socket.emit('namenotaccepted','Sorry, that name was taken. Please try another one.');
+				return false;
+			}
 		}
 		if (! /^[a-zA-Z0-9_ .,]+$/.test(data)) {
 			socket.emit('namenotaccepted','Please only use alphanumeric characters, spaces, and full stops.');
