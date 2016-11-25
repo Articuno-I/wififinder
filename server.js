@@ -84,21 +84,18 @@ io.on('connection', function(socket) {
 	socket.on('request', function(data) {
 		//stuff for battle requests. Something along these lines:
 		debug('recieved request');
-		var requesting = false;
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {
-				requesting = true;
+				socket.emit('Error','already requesting a game.');
+				debug('socket was already requesting a game');
+				return false;
 			}
 		}
-		if (!requesting) {
-			var reqname = getName(socket);
-			var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
-			var html = '<tr id="'+reqname+'requesttablerow"><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
-			io.emit('request',html);
-			battlerequests.push({requester:socket,request:html});
-		} else {
-//do stuff to stop them requesting multiple games at once
-		}
+		var reqname = getName(socket);
+		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
+		var html = '<tr id="'+reqname+'requesttablerow"><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
+		io.emit('request',html);
+		battlerequests.push({requester:socket,request:html});
 	});
 	socket.on('cancelrequest', function() {
 		debug('recieved request cancellation');
@@ -109,7 +106,7 @@ io.on('connection', function(socket) {
 	});
 	socket.on('challenge', function(data) {
 		debug('recieved challenge');
-//check if there's a request here? Possibly check if other people are challenging, IDK
+//check if there's a request here? Possibly check if other people are challenging, probably not tho
 		var toChallenge = getSocket(data.toChallenge);
 		toChallenge.emit('challenge', {user:getName(socket), FC:data.FC});
 	});
