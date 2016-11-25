@@ -112,11 +112,14 @@ io.on('connection', function(socket) {
 	});
 	socket.on('disconnect', function() {
 		debug('a user disconnected');
+		for (var i = 0; i < battlerequests.length; i++) {
+			if (battlerequests[i].requester === socket) {
+				battlerequests.splice(i,1);
+				io.emit('cancelrequest', getName(socket));
+			}
+		}
 		for (var i = 0; i < connections.length; i++) {
 			if (connections[i].Socket === socket) {connections.splice(i,1);}
-		}
-		for (var i = 0; i < battlerequests.length; i++) {
-			if (battlerequests[i].requester === socket) {battlerequests.splice(i,1);}
 		}
 		for (var i = 0; i < games.length; i++) {
 			//code
