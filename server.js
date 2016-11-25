@@ -21,7 +21,7 @@ function getSocket(name) {
 	} return false;
 }
 
-function getRequest(socket) {
+function getRequest(socket) { //probably unnecessary, expect I'll take this code out
 	for (var i = 0; i < battlerequests.length; i++) {
 		if (battlerequests[i].requester == socket) {return battlerequests[i];}
 	} return false;
