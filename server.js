@@ -152,7 +152,7 @@ io.on('connection', function(socket) {
 		for (var i = 0; i < games.length; i++) {
 			if (games[i].players[0] === pmname) {
 				target = games[i].players[1];
-			} else if (games[i].players[1] ==== pmname) {
+			} else if (games[i].players[1] === pmname) {
 				target = games[i].players[0];
 			}
 		}
@@ -174,9 +174,9 @@ io.on('connection', function(socket) {
 		}
 		if (socketname) {
 			for (var i = 0; i < games.length; i++) {
-				if (battlerequests[i].players[0] === socketname) {
+				if (games[i].players[0] === socketname) {
 					//do code
-				} else if (battlerequests[i].players[1] === socketname) {
+				} else if (games[i].players[1] === socketname) {
 					//also do code
 				}
 			}
