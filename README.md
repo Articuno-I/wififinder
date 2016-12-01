@@ -9,6 +9,7 @@ Basic idea:
 Difficulties:  
 * Smogon logins: basically impossible if you're not Chaos, afaik. I'm just using a "pick a name" system for now.
 * Actually doing stuff bc schoolwork and stuff
+ * rn I basically can't move for work, hopefully in about a week this will have changed and I'll be able to finally finish it off though
 * Working out how the server's storing all the data, getting the functions in place to move data between the two and all that stuff
 
 Things I'm working on currently:
