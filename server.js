@@ -51,6 +51,7 @@ io.on('connection', function(socket) {
 	for (var i = 0; i < battlerequests.length; i++) {
 		socket.emit('request',battlerequests[i].request);
 	}
+	var sockname;
 	socket.on('name', function(data) {
 		debug('received name');
 		if (! /^[a-zA-Z0-9_ .,]+$/.test(data)) {
@@ -70,6 +71,7 @@ io.on('connection', function(socket) {
 			}
 		}
 		connections.push({Name: data, Socket: socket});
+		sockname = data;
 		socket.emit('nameaccepted', '');
 		debug('accepted name');
 	});
@@ -83,22 +85,20 @@ io.on('connection', function(socket) {
 				return false;
 			}
 		}
-		var reqname = getName(socket);
 		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
-		var html = '<tr id="'+reqname+'requesttablerow"><td>'+reqname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+reqname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
+		var html = '<tr id="'+sockname+'requesttablerow"><td>'+sockname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+sockname+"'"+')">Challenge</button></tr>';//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
 		io.emit('request',html);
 		battlerequests.push({requester:socket,request:html});
 	});
 	socket.on('cancelrequest', function() {
 		debug('received request cancellation');
-		io.emit('cancelrequest', getName(socket)); //have to get name serverside or you can cancel other people's requests
+		io.emit('cancelrequest', sockname); //have to get name serverside or you can cancel other people's requests
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {battlerequests.splice(i,1);}
 		}
 	});
 	socket.on('challenge', function(data) {
 		debug('received challenge');
-		var chalname = getName(socket);
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {
 				socket.emit('decline',"Can't challenge someone while requesting a game.");
@@ -112,14 +112,13 @@ io.on('connection', function(socket) {
 			}
 		}
 		var toChallenge = getSocket(data.toChallenge);
-		toChallenge.emit('challenge', {user:getName(socket), FC:data.FC});
-		games.push({players:[chalname,data.toChallenge],playing:false});
+		toChallenge.emit('challenge', {user:sockname, FC:data.FC});
+		games.push({players:[sockname,data.toChallenge],playing:false});
 	});
 	socket.on('accept', function() {
 		debug('received accept');
-		var accname = getName(socket);
 		for (var i = 0; i < games.length; i++) {
-			if (games[i].players[0] === accname) {
+			if (games[i].players[0] === sockname) {
 				games[i].playing = true;
 				getSocket(games[i].players[1]).emit('accept','');
 				return true;
@@ -128,9 +127,8 @@ io.on('connection', function(socket) {
 	});
 	socket.on('decline', function() {
 		debug('received decline');
-		var decname = getName(socket); //I should really store the socket's name as a local variable, owell
 		for (var i = 0; i < games.length; i++) {
-			if (games[i].players[0] === decname) {
+			if (games[i].players[0] === sockname) {
 				getSocket(games[i].players[1]).emit('decline',''); //is the 2nd thing necessary? Should experiment with this probably
 				games.splice(i,1);
 				return true;
@@ -138,7 +136,7 @@ io.on('connection', function(socket) {
 		} debug('Error: request not found');
 	});
 	socket.on('pm', function(data) {
-		debug('recieved pm');
+		debug('received pm');
 		for (var i = 0; i < data.length; i++) {
 			if (data[i] === '<' || data[i] === '"' || data[i] === "'" || data[i] === '&') {
 				//probably forgetting some, oh well
@@ -147,12 +145,11 @@ io.on('connection', function(socket) {
 				return false;
 			}
 		}
-		var pmname = getName(socket);
 		var target = false;
 		for (var i = 0; i < games.length; i++) {
-			if (games[i].players[0] === pmname) {
+			if (games[i].players[0] === sockname) {
 				target = games[i].players[1];
-			} else if (games[i].players[1] === pmname) {
+			} else if (games[i].players[1] === sockname) {
 				target = games[i].players[0];
 			}
 		}
@@ -160,30 +157,29 @@ io.on('connection', function(socket) {
 			console.log('Error: pm target not found!');
 			return false;
 		}
-		getSocket(target).emit('pm','<b>'+pmname+':</b> '+data); //possibly add timestamps later, IDK
-		socket.emit('pm','<b>You: </b> '+data); //IDK if I'll need this, there's potential problems if not though (e.g. message order different
+		getSocket(target).emit('pm','<b>'+sockname+':</b> '+data); //possibly add timestamps later, IDK
+		socket.emit('pm','<b>You:</b> '+data); //IDK if I'll need this, there's potential problems if not though (e.g. message order different)
+		//also IDK about having it say "You: " but owell
 	});
 	socket.on('disconnect', function() {
 		debug('a user disconnected');
-		var socketname = false;
 		for (var i = 0; i < connections.length; i++) {
 			if (connections[i].Socket === socket) {
-				socketname = connections[i].Name;
 				connections.splice(i,1);
 			}
 		}
-		if (socketname) {
+		if (!!sockname) {//IDK if the !! is needed / if it works, should test this
 			for (var i = 0; i < games.length; i++) {
-				if (games[i].players[0] === socketname) {
+				if (games[i].players[0] === sockname) {
 					//do code
-				} else if (games[i].players[1] === socketname) {
+				} else if (games[i].players[1] === sockname) {
 					//also do code
 				}
 			}
 			for (var i = 0; i < battlerequests.length; i++) {
 				if (battlerequests[i].requester === socket) {
 					battlerequests.splice(i,1);
-					io.emit('cancelrequest', socketname);
+					io.emit('cancelrequest', sockname);
 				}
 			}
 		}
