@@ -97,15 +97,19 @@ function challenge(chalname) {
 	}
 	//may include stuff to prevent challenging while requesting here, definitely need that code server-side though.
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
+	document.getElementById('requesting').innerHTML = 'You are requesting a battle with '+chalname; //should put in a cancel challenge thing here too
+	document.getElementById('requesting').style.display = 'block';
 }
-var challenges = [];
+var challenges = []; //code from here's possibly broken, IDK
 socket.on('challenge', function(data) {
+	debug('received challenge');
 	challenges.push({challenger:data.user, FC:data.FC});
 	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+"'"+data.user+"'"+')">Accept</button><button onclick="decline('+"'"+data.user+"'"+')">Decline</button></p>';
 });
 
 function accept(chalname) {
-	socket.emit('accept', chalname);
+	debug('accepting');
+	socket.emit('accept','');
 	opponent.Name = chalname;
 	for (var i = 0; i < challenges.length; i++) {
 		if (challenges[i].challenger === chalname) {
@@ -114,20 +118,37 @@ function accept(chalname) {
 		}
 	}
 	while (challenges.length) {
-		decline(challenges[i].challenger);
+		decline(challenges[0].challenger);
 	}
-//change html stuff (partially done)
+//change html stuff (only slightly done)
 	document.getElementById('challenges').innerHTML = '<p>Waiting for challenges...</p>';
 	document.getElementById('challenges').style.display = 'none';
 	challenges = [];
 }
+socket.on('accept', function() {
+	debug('challenge accepted, code past this point not yet finished');
+	document.getElementById('requesting').style.display = 'none';
+	//do stuff
+/*
+Step 1: get opponent's name, tier, FC etc. from table (?)
+Step 2: clear all this stuff and show battle div, with all that info put in
+IDK what else needs to be done
+*/
+});
+
 function decline(chalname) {
-	socket.emit('decline', chalname);
+	debug('declining');
+	socket.emit('decline','');
 	for (var i = 0; i < challenges.length; i++) {
 		if (challenges[i].challenger === chalname) {challenges.splice(i,1);}
 	}
 	document.getElementById(chalname+'challengerequest').outerHTML = '';
 }
+socket.on('decline', function() {
+	debug('challenge declined');
+	document.getElementById('requesting').style.display = 'none';
+	//get rid of any code I put in to stop challenging multiple people, that's not done yet tho
+});
 
 function chat() {
 	socket.emit('pm', document.getElementById('chatmsg').value);
