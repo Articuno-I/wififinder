@@ -118,9 +118,9 @@ io.on('connection', function(socket) {
 	socket.on('accept', function() {
 		debug('received accept');
 		for (var i = 0; i < games.length; i++) {
-			if (games[i].players[0] === sockname) {
+			if (games[i].players[1] === sockname) {
 				games[i].playing = true;
-				getSocket(games[i].players[1]).emit('accept','');
+				getSocket(games[i].players[0]).emit('accept','');
 				return true;
 			}
 		} debug('Error: request not found');
@@ -185,7 +185,6 @@ io.on('connection', function(socket) {
 		}
 	});
 });
-
 
 http.listen(8000, function() {
 	console.log('listening on *:8000');
