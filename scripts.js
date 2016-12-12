@@ -139,17 +139,16 @@ function accept(chalname) {
 	document.getElementById('challenges').style.display = 'none';
 	challenges = [];
 	document.getElementById('chat').style.display = 'block';
+	document.getElementById('opponent_details').innerHTML = 'Your opponent is '+opponent.Name+'. Their Friend Code is '+opponent.FC+'.';
 }
 socket.on('accept', function() {
 	debug('challenge accepted, code past this point not yet finished');
 	document.getElementById('requesting').style.display = 'none';
-	//do stuff
-/*
-Step 1: get opponent's name, tier, FC etc. from table (?)
-Step 2: clear all this stuff and show battle div, with all that info put in
-IDK what else needs to be done
-*/
+	document.getElementById('initform').style.display = 'none';
+	document.getElementById('challenges').style.display = 'none';
+	//get opponent's name, tier, FC etc. from table (?)
 	document.getElementById('chat').style.display = 'block';
+	document.getElementById('opponent_details').innerHTML = 'Your opponent\'s details will show here (when I\'ve coded that in)';
 });
 
 function decline(chalname) {
@@ -175,6 +174,11 @@ function chat() {
 socket.on('pm', function(data) {
 	document.getElementById('messages').innerHTML += '<p>'+data+'</p>'; //data needs to be manipulated on server but IDK if I need to on clientside as well
 });
+
+socket.on('dc', function() {
+	debug('Opponent has DC\'d');
+	//I guess do stuff
+}
 
 socket.on('Error', function(data) {
 	if (typeof data === 'string') {console.error(data);}
