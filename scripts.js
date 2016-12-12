@@ -17,13 +17,14 @@ function xyshow() {
 }
 
 var name; //global scope so I don't need to ask the server for it later maybe
+//IDK if I ever actually use this lol
 function _sendname() {
 	debug('sending name');
 	name = document.getElementById('name').value;
 	var info = document.getElementById('name_info');
 	if (!name.length) {
 		debug('name not found');
-		info.innerHTML = 'Please input a name.'; //probably be better to just make it a variable but meh.
+		info.innerHTML = 'Please input a name.'; 
 		info.style.display = 'block';
 		return false;
 	}
@@ -45,6 +46,10 @@ socket.on('nameaccepted', function() {
 });
 
 function _submit() {
+	//check user isn't challenging someone (need to implement this serverside as well)
+	if (document.getElementById('requesting').innerHTML.indexOf('You are requesting a battle with') != -1) {
+		document.getElementById('requesting').innerHTML += '<br>Please cancel your challenge before requesting a battle.'; //really need to sort out an error message thing properly.
+	}
 	//step 1: get the data
 	var gen; if (document.getElementById('sumo').checked) {gen = 7;} else {gen = 6;} //could probably use a bool but meh
 	var xy; if (gen === 6 && document.getElementById('XY').checked) {xy = true;} else {xy = false;}
@@ -62,7 +67,6 @@ function _submit() {
 	//step 2: actually send it
 	socket.emit('request', data);
 	//step 3, change what's on screen.
-	//need to make sure people can't challenge while requesting, this needs to be done both clientside and serverside
 	document.getElementById('initform').style.display = 'none';
 	var chaldiv = document.getElementById('requesting');
 	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc+'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
@@ -92,15 +96,25 @@ socket.on('cancelrequest', function(data) {
 
 function challenge(chalname) {
 	var fc = document.getElementById('FC').value;
-	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
-		return false; //insert stuff to explain why you can't challenge without a fc yada yada
+	var chaldiv = document.getElementById('requesting');
+	if (chaldiv.innerHTML.indexOf('You are requesting a Gen') != -1) {
+		//check they're not currently requesting a battle
+		//note: also need to check they aren't requesting a battle serverside (already implemented)
+		chaldiv.innerHTML += '<br>You cannot challenge someone while requesting a battle. Please cancel your request before challenging.';
+		//potential problem: Could lead to this message occurring multiple times if they try to challenge multiple people. Could make sure the message isn't already there? IDK
+		//could just have a global bool for whether they're challenging or not, but meh
+		return false;
 	}
-	//may include stuff to prevent challenging while requesting here, definitely need that code server-side though.
+	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
+		chaldiv.innerHTML = 'Please enter your Friend Code before challenging.';
+		chaldiv.style.display = 'block';
+		return false;
+	}
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
 	document.getElementById('requesting').innerHTML = 'You are requesting a battle with '+chalname; //should put in a cancel challenge thing here too
 	document.getElementById('requesting').style.display = 'block';
 }
-var challenges = []; //code from here's possibly broken, IDK
+var challenges = []; //code from here's less tested than is perhaps optimal (read: I'm 103% sure it doesn't work), need to look at it and possibly redesign
 socket.on('challenge', function(data) {
 	debug('received challenge');
 	challenges.push({challenger:data.user, FC:data.FC});
@@ -124,6 +138,7 @@ function accept(chalname) {
 	document.getElementById('challenges').innerHTML = '<p>Waiting for challenges...</p>';
 	document.getElementById('challenges').style.display = 'none';
 	challenges = [];
+	document.getElementById('chat').style.display = 'block';
 }
 socket.on('accept', function() {
 	debug('challenge accepted, code past this point not yet finished');
@@ -134,6 +149,7 @@ Step 1: get opponent's name, tier, FC etc. from table (?)
 Step 2: clear all this stuff and show battle div, with all that info put in
 IDK what else needs to be done
 */
+	document.getElementById('chat').style.display = 'block';
 });
 
 function decline(chalname) {
@@ -157,7 +173,7 @@ function chat() {
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
 //actually, do I *really* need to deal with it on the server, knowing that?
 socket.on('pm', function(data) {
-	document.getElementById('messages').innerHTML += data; //data needs to be manipulated on server but IDK if I need to on clientside as well
+	document.getElementById('messages').innerHTML += '<p>'+data+'</p>'; //data needs to be manipulated on server but IDK if I need to on clientside as well
 });
 
 socket.on('Error', function(data) {
