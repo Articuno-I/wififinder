@@ -171,9 +171,11 @@ io.on('connection', function(socket) {
 		if (!!sockname) {//IDK if the !! is needed / if it works, should test this
 			for (var i = 0; i < games.length; i++) {
 				if (games[i].players[0] === sockname) {
-					//do code
+					getSocket(players[1]).emit('dc','');
+					games.splice(i,1);
 				} else if (games[i].players[1] === sockname) {
-					//also do code
+					getSocket(players[0]).emit('dc','');
+					games.splice(i1,);
 				}
 			}
 			for (var i = 0; i < battlerequests.length; i++) {
