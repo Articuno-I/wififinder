@@ -121,6 +121,7 @@ io.on('connection', function(socket) {
 			if (games[i].players[1] === sockname) {
 				games[i].playing = true;
 				getSocket(games[i].players[0]).emit('accept','');
+				io.emit('cancelrequest',sockname); //have to test this to make sure it works
 				return true;
 			}
 		} debug('Error: request not found');
@@ -171,10 +172,10 @@ io.on('connection', function(socket) {
 		if (!!sockname) {//IDK if the !! is needed / if it works, should test this
 			for (var i = 0; i < games.length; i++) {
 				if (games[i].players[0] === sockname) {
-					getSocket(players[1]).emit('dc','');
+					getSocket(games[i].players[1]).emit('dc','');
 					games.splice(i,1);
 				} else if (games[i].players[1] === sockname) {
-					getSocket(players[0]).emit('dc','');
+					getSocket(games[i].players[0]).emit('dc','');
 					games.splice(i,1);
 				}
 			}
