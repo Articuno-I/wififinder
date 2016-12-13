@@ -85,6 +85,8 @@ socket.on('request', function(data) {
 function cancelrequest() {
 	socket.emit('cancelrequest', '');
 	document.getElementById('requesting').style.display = 'none';
+	document.getElementById('requesting').innerHTML = '';
+	document.getElementById('challenges').style.display = 'none';
 	document.getElementById('initform').style.display = 'block';
 }
 socket.on('cancelrequest', function(data) {
