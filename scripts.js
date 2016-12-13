@@ -95,7 +95,6 @@ socket.on('cancelrequest', function(data) {
 });
 
 function challenge(chalname) {
-	//Something in this function doesn't work on IE on Windows 7. Buggered if I know what.
 	var fc = document.getElementById('FC').value;
 	var chaldiv = document.getElementById('requesting');
 	if (chaldiv.innerHTML.indexOf('You are requesting a Gen') != -1) {
@@ -117,6 +116,7 @@ function challenge(chalname) {
 }
 var challenges = []; //code from here's less tested than is perhaps optimal (read: I'm 103% sure it doesn't work), need to look at it and possibly redesign
 socket.on('challenge', function(data) {
+	//Something in this function doesn't work on IE on Windows 7. Buggered if I know what.
 	debug('received challenge');
 	challenges.push({challenger:data.user, FC:data.FC});
 	document.getElementById('challenges').innerHTML += '<p id="'+data.user+'challengerequest">'+data.user+' is challenging you! <button onclick="accept('+"'"+data.user+"'"+')">Accept</button><button onclick="decline('+"'"+data.user+"'"+')">Decline</button></p>';
