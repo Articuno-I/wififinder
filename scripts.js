@@ -95,6 +95,7 @@ socket.on('cancelrequest', function(data) {
 });
 
 function challenge(chalname) {
+	//Something in this function doesn't work on IE on Windows 7. Buggered if I know what.
 	var fc = document.getElementById('FC').value;
 	var chaldiv = document.getElementById('requesting');
 	if (chaldiv.innerHTML.indexOf('You are requesting a Gen') != -1) {
