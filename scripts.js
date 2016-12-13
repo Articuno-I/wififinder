@@ -78,7 +78,7 @@ socket.on('request', function(data) {
 	if (data.indexOf(name) == 8) { 
 		debug('recieved own request');
 	} else {
-		reqtable.innerHTML += data;
+		reqtable.innerHTML += data; //Breaks windows 7 IE - "Unknown runtime error". Recommended solution: Use firefox.
 	}
 });
 
