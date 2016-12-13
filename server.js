@@ -87,8 +87,7 @@ io.on('connection', function(socket) {
 		}
 		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
 		var html = '<tr id="'+sockname+'requesttablerow"><td>'+sockname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+sockname+"'"+')">Challenge</button></td></tr>';
-		//there's gotta be a better way to do the strings than that but it'd take me like 10 minutes to research escaping characters and how it interacts with html n stuff so meh.
-		io.emit('request',html);
+		io.emit('request',[sockname,data.Gen,data.Tier,xypart,data.FC]);
 		battlerequests.push({requester:socket,request:html});
 	});
 	socket.on('cancelrequest', function() {
