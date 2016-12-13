@@ -9,24 +9,11 @@ var battlerequests = []; //store requests for battles
 var games = []; //store ongoing battles and challenges
 
 //functions to go with global variables
-function getName(socket) {
-	for (var i = 0; i < connections.length; i++) {
-		if (connections[i].Socket === socket) {return connections[i].Name;}
-	}
-	console.log('Error: name not found');
-	return "Error: name not found";
-}
-
 function getSocket(name) {
 	for (var i = 0; i < connections.length; i++) {
 		if (connections[i].Name == name) {return connections[i].Socket;}
-	} return false;
-}
-
-function getRequest(socket) { //probably unnecessary, expect I'll take this code out
-	for (var i = 0; i < battlerequests.length; i++) {
-		if (battlerequests[i].requester == socket) {return battlerequests[i];}
-	} return false;
+	}
+	return false;
 }
 
 //debugging code
@@ -35,6 +22,7 @@ function debug(text) {
 	if (debugging) {console.log('debug: '+text);}
 }
 
+//handle get requests
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client.html');
 });
@@ -47,6 +35,7 @@ app.get('/styles.css', function(req,res) {
 	res.sendFile(__dirname + '/styles.css');
 });
 
+//main loop
 io.on('connection', function(socket) {
 	for (var i = 0; i < battlerequests.length; i++) {
 		socket.emit('request',battlerequests[i].request);
@@ -86,9 +75,9 @@ io.on('connection', function(socket) {
 			}
 		}
 		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
-		var html = '<tr id="'+sockname+'requesttablerow"><td>'+sockname+'</td><td>'+data.Gen+'</td><td>'+data.Tier+'</td><td>'+xypart+'</td><td>'+data.FC+'</td><td><button type="button" onclick="challenge('+"'"+sockname+"'"+')">Challenge</button></td></tr>';
+		//doesn't display correctly on some IE versions. Perhaps handle this clientside?
 		io.emit('request',[sockname,data.Gen,data.Tier,xypart,data.FC]);
-		battlerequests.push({requester:socket,request:html});
+		battlerequests.push({requester:socket,request:[sockname,data.Gen,data.Tier,xypart,data.FC]});
 	});
 	socket.on('cancelrequest', function() {
 		debug('received request cancellation');
@@ -163,6 +152,7 @@ io.on('connection', function(socket) {
 		//also IDK about having it say "You: " but owell
 	});
 	socket.on('disconnect', function() {
+		//This code doesn't trigger for Internet Explorer, IDK how to work around this though. May work on later versions, have to test.
 		debug('a user disconnected');
 		for (var i = 0; i < connections.length; i++) {
 			if (connections[i].Socket === socket) {
@@ -189,6 +179,7 @@ io.on('connection', function(socket) {
 	});
 });
 
+//connect on port 8000
 http.listen(8000, function() {
 	console.log('listening on *:8000');
 });
