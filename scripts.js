@@ -91,7 +91,7 @@ function cancelrequest() {
 }
 socket.on('cancelrequest', function(data) {
 	if (data != name) {
-		document.getElementById(data+'requesttablerow').outerHTML=''; //will this work if that request isn't found (e.g. if it's your own request)? Need to test this.
+		document.getElementById('Requests').deleteRow(document.getElementById(data+'requesttablerow').rowIndex);
 //Will also need to make sure apostraphes and quotation marks are escaped from names, as well as html tags.
 	}
 });
