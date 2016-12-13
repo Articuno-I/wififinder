@@ -175,7 +175,7 @@ io.on('connection', function(socket) {
 					games.splice(i,1);
 				} else if (games[i].players[1] === sockname) {
 					getSocket(players[0]).emit('dc','');
-					games.splice(i1,);
+					games.splice(i,1);
 				}
 			}
 			for (var i = 0; i < battlerequests.length; i++) {
