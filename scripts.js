@@ -74,11 +74,18 @@ function _submit() {
 	document.getElementById('challenges').style.display = 'block';
 }
 socket.on('request', function(data) {
-	var reqtable = document.getElementById('reqbody');
-	if (data.indexOf(name) == 8) { 
+	if (data[0] == name) { 
 		debug('recieved own request');
 	} else {
-		reqtable.innerHTML += data; //Breaks windows 7 IE - "Unknown runtime error". Recommended solution: Use firefox.
+		var row = document.getElementById('Requests').insertRow(-1);
+		row.id = data[0]+'requesttablerow';
+		var cell;
+		for (var i = 0; i < 5; i++) {
+			cell = row.insertCell(i);
+			cell.innerHTML = data[i];
+		}
+		cell = row.insertCell(5);
+		cell.innerHTML = '<button type="button" onclick="challenge(\''+data[0]+'\')">Challenge</button>';
 	}
 });
 
