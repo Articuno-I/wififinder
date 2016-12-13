@@ -127,6 +127,10 @@ io.on('connection', function(socket) {
 	});
 	socket.on('pm', function(data) {
 		debug('received pm');
+		if (!data.length) {
+			debug('Error: pm had zero length');
+			return false;
+		}
 		for (var i = 0; i < data.length; i++) {
 			if (data[i] === '<' || data[i] === '"' || data[i] === "'" || data[i] === '&') {
 				//probably forgetting some, oh well
