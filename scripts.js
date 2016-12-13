@@ -178,7 +178,7 @@ socket.on('pm', function(data) {
 socket.on('dc', function() {
 	debug('Opponent has DC\'d');
 	//I guess do stuff
-}
+});
 
 socket.on('Error', function(data) {
 	if (typeof data === 'string') {console.error(data);}
