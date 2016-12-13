@@ -136,9 +136,11 @@ function accept(chalname) {
 	while (challenges.length) {
 		decline(challenges[0].challenger);
 	}
-//change html stuff (only slightly done)
+//change html stuff
 	document.getElementById('challenges').innerHTML = '<p>Waiting for challenges...</p>';
 	document.getElementById('challenges').style.display = 'none';
+	document.getElementById('Requests').style.display = 'none';
+	document.getElementById('requesting').style.display = 'none';
 	challenges = [];
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent is '+opponent.Name+'. Their Friend Code is '+opponent.FC+'.';
@@ -147,7 +149,7 @@ socket.on('accept', function() {
 	debug('challenge accepted, code past this point not yet finished');
 	document.getElementById('requesting').style.display = 'none';
 	document.getElementById('initform').style.display = 'none';
-	document.getElementById('challenges').style.display = 'none';
+	document.getElementById('Requests').style.display = 'none';
 	//get opponent's name, tier, FC etc. from table (?)
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent\'s details will show here (when I\'ve coded that in)';
