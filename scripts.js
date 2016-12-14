@@ -194,7 +194,14 @@ function chat() {
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
 //actually, do I *really* need to deal with it on the server, knowing that?
 socket.on('pm', function(data) {
-	document.getElementById('messages').innerHTML += '<p class="pm">'+data+'</p>'; //data needs to be manipulated on server but IDK if I need to on clientside as well
+	var messagediv = document.getElementById('messages')
+	var notscrolled = messagediv.scrollHeight - messagediv.clientHeight <= messagediv.scrollTop + 1
+	messagediv.innerHTML += '<p class="pm">'+data+'</p>';
+	//code for scrolling to bottom was shamelessly stolen from stackoverflow user: dotnetCarpenter
+	//blame them if it doesn't work <_<
+	if (notscrolled) {
+		messagediv.scrollTop = messagediv.scrollHeight - messagediv.clientHeight;
+	}
 });
 
 function reset() {
