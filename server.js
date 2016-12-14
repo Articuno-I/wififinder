@@ -74,8 +74,7 @@ io.on('connection', function(socket) {
 				return false;
 			}
 		}
-		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2612';}
-		//doesn't display correctly on some IE versions. Perhaps handle this clientside?
+		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2610';}
 		io.emit('request',[sockname,data.Gen,data.Tier,xypart,data.FC]);
 		battlerequests.push({requester:socket,request:[sockname,data.Gen,data.Tier,xypart,data.FC]});
 	});
