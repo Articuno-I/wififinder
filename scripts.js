@@ -48,7 +48,7 @@ socket.on('namenotaccepted', function(data) {
 socket.on('nameaccepted', function() {
 	debug('name accepted');
 	document.getElementById('login').style.display = 'none';
-	document.getElementById('login_name').innerHTML = 'You are logged in as '+name;
+	document.getElementById('login_name').innerHTML = 'You are logged in as <b>'+name+'</b>';
 	document.getElementById('login_name').style.display = 'block';
 	document.getElementById('initform').style.display = 'block';
 	document.getElementById('Requests').style.display = 'block';
@@ -57,7 +57,7 @@ socket.on('nameaccepted', function() {
 function _submit() {
 	//check user isn't challenging someone (need to implement this serverside as well)
 	if (document.getElementById('requesting').innerHTML.indexOf('You are requesting a battle with') != -1) {
-		document.getElementById('requesting').innerHTML += '<br>Please cancel your challenge before requesting a battle.'; //really need to sort out an error message thing properly.
+		error('Please cancel your challenge before requesting a battle.');
 	}
 	//step 1: get the data
 	var gen; if (document.getElementById('sumo').checked) {gen = 7;} else {gen = 6;} //could probably use a bool but meh
@@ -79,7 +79,7 @@ function _submit() {
 	//step 3, change what's on screen.
 	document.getElementById('initform').style.display = 'none';
 	var chaldiv = document.getElementById('requesting');
-	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc+'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
+	chaldiv.innerHTML = '<br>You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc+'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
 	chaldiv.style.display = 'block';
 	document.getElementById('challenges').style.display = 'block';
 	document.getElementById('error').style.display = 'none';
@@ -103,7 +103,7 @@ socket.on('request', function(data) {
 function cancelrequest() {
 	socket.emit('cancelrequest', '');
 	document.getElementById('requesting').style.display = 'none';
-	document.getElementById('requesting').innerHTML = '';
+	document.getElementById('requesting').innerHTML = '<br>';
 	document.getElementById('challenges').style.display = 'none';
 	document.getElementById('initform').style.display = 'block';
 }
@@ -127,7 +127,7 @@ function challenge(chalname) {
 		return false;
 	}
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
-	document.getElementById('requesting').innerHTML = 'You are requesting a battle with '+chalname; //should put in a cancel challenge thing here too
+	document.getElementById('requesting').innerHTML = '<br>You are requesting a battle with '+chalname; //should put in a cancel challenge thing here too
 	document.getElementById('requesting').style.display = 'block';
 	document.getElementById('error').style.display = 'none';
 }
@@ -158,7 +158,7 @@ function accept(chalname) {
 	document.getElementById('requesting').style.display = 'none';
 	challenges = [];
 	document.getElementById('chat').style.display = 'block';
-	document.getElementById('opponent_details').innerHTML = 'Your opponent is '+opponent.Name+'. Their Friend Code is '+opponent.FC+'.';
+	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
 }
 socket.on('accept', function() {
 	debug('challenge accepted, code past this point not yet finished');
@@ -195,15 +195,30 @@ socket.on('pm', function(data) {
 });
 
 function reset() {
+	debug('reset window');
 	document.getElementById('initform').style.display = 'block';
 	document.getElementById('Requests').style.display = 'block';
+	document.getElementById('chatbutton').style.display = 'block';
 	document.getElementById('chat').style.display = 'none';
+	document.getElementById('endbutton').innerHTML = '<button type="button" id="finished" onclick="endgame()">End game room</button>'
 	document.getElementById('messages').innerHTML = '';
+	document.getElementById('requesting').innerHTML = '<br>';
 }
 
-socket.on('dc', function() {
-	debug('Opponent has DC\'d');
-	document.getElementById('chatbutton').innerHTML = 'Your opponent has disconnected. <button onclick="reset()">Find another battle</button>';
+function endgame() {
+	debug('Ended game');
+	socket.emit('endgame','');
+	reset();
+}
+
+socket.on('endgame', function(data) {
+	debug('Game was ended by opponent');
+	document.getElementById('chatbutton').style.display = 'none';
+	if (data == 'dc') {
+		document.getElementById('endbutton').innerHTML = 'Your opponent has disconnected. <button onclick="reset()">Find another battle</button>';
+	} else {
+		document.getElementById('endbutton').innerHTML = 'Your opponent has ended the game. <button onclick="reset()">Find another battle</button>';
+	}
 });
 
 socket.on('Error', function(data) {
