@@ -8,15 +8,15 @@ Basic idea:
 
 Difficulties:  
 * Smogon logins: basically impossible if you're not Chaos, afaik. I'm just using a "pick a name" system for now.
-* CSS, currently it looks terrible and I'm bad at changing that.
+* CSS, I'm terrible at making things look ok but hopefully someone else can fix that stuff.
 * Compatibility, specifically Internet Explorer is terrible and I haven't tested it on phone browsers or Safari yet.
 
 Things I'm working on currently:
-* Battles ending, IDK how to handle this. It'd also be nice to go back to the main submission part once a battle's over.
-* Disconnects, making sure the array of current battles doesn't get infinitely long etc. Also, Internet Explorer doesn't send a disconnect message when it dc's, which breaks a few things.
- * IDK how to allow people back into battles if they DC, guess that'll just be something I can't deal with most likely.
+* Bug catching, there's bound to be 5000000 of them that will doubtless crash the server many times.
+* Compatibility, especially with some IE versions not telling the server when they dc which has potential to break things.
 
 Future considerations:
+* Some way of getting back to battles after a dc? IDK how this would work though.
 * Logging stuff: how many battles, what tiers, how long the wait times were, etc.
 * Chat moderation: Prevent certain phrases, perhaps log chats to check validity of complaints?
 * Log IPs?
