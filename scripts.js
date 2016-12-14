@@ -213,6 +213,7 @@ function reset() {
 	document.getElementById('endbutton').innerHTML = '<button type="button" id="finished" onclick="endgame()">End game room</button>'
 	document.getElementById('messages').innerHTML = '';
 	document.getElementById('requesting').innerHTML = '<br>';
+	xyshow();
 }
 
 function endgame() {
