@@ -106,11 +106,17 @@ io.on('connection', function(socket) {
 	});
 	socket.on('accept', function() {
 		debug('received accept');
+		for (var i = 0; i < battlerequests.length; i++) {
+			if (battlerequests[i].requester === socket) {
+				battlerequests.splice(i,1);
+				i=battlerequests.length;
+			}
+		}
 		for (var i = 0; i < games.length; i++) {
 			if (games[i].players[1] === sockname) {
 				games[i].playing = true;
 				getSocket(games[i].players[0]).emit('accept','');
-				io.emit('cancelrequest',sockname); //have to test this to make sure it works
+				io.emit('cancelrequest',sockname);
 				return true;
 			}
 		} debug('Error: request not found');
@@ -155,8 +161,20 @@ io.on('connection', function(socket) {
 		socket.emit('pm','<b>You:</b> '+data); //IDK if I'll need this, there's potential problems if not though (e.g. message order different)
 		//also IDK about having it say "You: " but owell
 	});
+	socket.on('endgame', function() {
+		debug('game ended');
+		for (var i = 0; i < games.length; i++) {
+			if (games[i].players[0] === sockname) {
+				getSocket(games[i].players[1]).emit('endgame','');
+				games.splice(i,1);
+			} else if (games[i].players[1] === sockname) {
+				getSocket(games[i].players[0]).emit('endgame','');
+				games.splice(i,1);
+			}
+		}
+	});
 	socket.on('disconnect', function() {
-		//This code doesn't trigger for Internet Explorer, IDK how to work around this though. May work on later versions, have to test.
+		//This code doesn't trigger for some IE versions, IDK how to work around this though. Not sure if it works on Edge
 		debug('a user disconnected');
 		for (var i = 0; i < connections.length; i++) {
 			if (connections[i].Socket === socket) {
@@ -166,10 +184,10 @@ io.on('connection', function(socket) {
 		if (!!sockname) {//IDK if the !! is needed / if it works, should test this
 			for (var i = 0; i < games.length; i++) {
 				if (games[i].players[0] === sockname) {
-					getSocket(games[i].players[1]).emit('dc','');
+					getSocket(games[i].players[1]).emit('endgame','dc');
 					games.splice(i,1);
 				} else if (games[i].players[1] === sockname) {
-					getSocket(games[i].players[0]).emit('dc','');
+					getSocket(games[i].players[0]).emit('endgame','dc');
 					games.splice(i,1);
 				}
 			}
