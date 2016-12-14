@@ -32,7 +32,7 @@
 			<tr class="tablehead"><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge button--></td></tr>
 		</tbody></table>
 		<!-- Stuff for requesting & challenging & stuff -->
-		<div id="requesting" style="display:none">
+		<div id="requesting" style="display:none"><br>
 		</div>
 		<div id="challenges" style="display:none">
 			<p>Waiting for challenges...</p>
@@ -42,8 +42,8 @@
 		<div id="chat" style="display:none">
 			<div id="opponent_details"></div>
 			<div id="messages"></div>
-			<div id="chatbutton">Chat: <input type="text" id="chatmsg" /><button onclick="chat()">Chat</button></div>
-			<!-- Still need something to say the battle's over, IDK how to do this -->
+			<div id="chatbutton">Chat: <input type="text" id="chatmsg" size="50" /><button onclick="chat()">Chat</button></div>
+			<div id="endbutton"><button type="button" id="finished" onclick="endgame()">End game room</button></div>
 		</div>
 	</div>
 </body>
