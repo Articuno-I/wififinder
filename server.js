@@ -95,7 +95,7 @@ io.on('connection', function(socket) {
 			}
 		}
 		for (var i = 0; i < games.length; i++) {
-			if (games[i].players[0] === chalname) {
+			if (games[i].players[0] === sockname) {
 				socket.emit('Error','Already challenging someone or in a game');
 				return false;
 			}
