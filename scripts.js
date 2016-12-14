@@ -88,6 +88,10 @@ socket.on('request', function(data) {
 	if (data[0] == name) { 
 		debug('recieved own request');
 	} else {
+		if (navigator.userAgent.indexOf('MSIE') != -1) {
+			//IE compatibility. AFAIK all other browsers display the unicode correctly.
+			data[3] = data[3]=='&#x2611' ? 'yes' : 'no';
+		}
 		var row = document.getElementById('Requests').insertRow(-1);
 		row.id = data[0]+'requesttablerow';
 		var cell;
