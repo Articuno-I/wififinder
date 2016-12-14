@@ -7,6 +7,15 @@ function debug(text) {
 	if (debugging) {console.log('debug: '+text);}
 }
 
+function error(problem=false) {
+	if (!problem) {
+		problem = 'An unknown error occurred.';
+	}
+	var errordiv = document.getElementById('error');
+	errordiv.innerHTML = problem;
+	errordiv.style.display = 'block';
+}
+
 function xyshow() {
 //will probably remove this, all the "xy only" stuff could just be dealt with in the tier section
 	if (!document.getElementById("sumo").checked) {
@@ -18,7 +27,7 @@ function xyshow() {
 
 var name; //global scope so I don't need to ask the server for it later maybe
 //IDK if I ever actually use this lol
-function _sendname() {
+function sendname() {
 	debug('sending name');
 	name = document.getElementById('name').value;
 	var info = document.getElementById('name_info');
@@ -56,11 +65,12 @@ function _submit() {
 	var fc = document.getElementById('FC').value;
 	var tier = document.getElementById('tier').value;
 	//step 1.5: make sure all the data's there
-	var info = true;
-	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {info = false;}
-	if (!tier.length) {info = false;}
-	if (!info) {
-		document.getElementById('error').style.display = 'block';
+	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
+		error('Please input a valid Friend Code.');
+		return false;
+	}
+	if (!tier.length) {
+		error('Please enter a tier.');
 		return false;
 	}
 	var data = {Gen: gen, FC: fc, Tier: tier, XY: xy};
@@ -72,6 +82,7 @@ function _submit() {
 	chaldiv.innerHTML = 'You are requesting a Gen '+gen+' '+tier+' battle using your FC '+fc+'. <button id="cancelrequest" onclick="cancelrequest()">Cancel</button>';
 	chaldiv.style.display = 'block';
 	document.getElementById('challenges').style.display = 'block';
+	document.getElementById('error').style.display = 'none';
 }
 socket.on('request', function(data) {
 	if (data[0] == name) { 
@@ -105,23 +116,20 @@ socket.on('cancelrequest', function(data) {
 
 function challenge(chalname) {
 	var fc = document.getElementById('FC').value;
-	var chaldiv = document.getElementById('requesting');
-	if (chaldiv.innerHTML.indexOf('You are requesting a Gen') != -1) {
+	if (document.getElementById('requesting').innerHTML.indexOf('You are requesting a Gen') != -1) {
 		//check they're not currently requesting a battle
-		//note: also need to check they aren't requesting a battle serverside (already implemented)
-		chaldiv.innerHTML += '<br>You cannot challenge someone while requesting a battle. Please cancel your request before challenging.';
-		//potential problem: Could lead to this message occurring multiple times if they try to challenge multiple people. Could make sure the message isn't already there? IDK
-		//could just have a global bool for whether they're challenging or not, but meh
+		//note: this is also checked serverside
+		error('You cannot challenge someone while requesting a battle. Please cancel your request before challenging.');
 		return false;
 	}
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
-		chaldiv.innerHTML = 'Please enter your Friend Code before challenging.';
-		chaldiv.style.display = 'block';
+		error('Please enter your Friend Code before challenging.');
 		return false;
 	}
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
 	document.getElementById('requesting').innerHTML = 'You are requesting a battle with '+chalname; //should put in a cancel challenge thing here too
 	document.getElementById('requesting').style.display = 'block';
+	document.getElementById('error').style.display = 'none';
 }
 var challenges = []; //code from here's less tested than is perhaps optimal (read: I'm 103% sure it doesn't work), need to look at it and possibly redesign
 socket.on('challenge', function(data) {
@@ -183,12 +191,19 @@ function chat() {
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
 //actually, do I *really* need to deal with it on the server, knowing that?
 socket.on('pm', function(data) {
-	document.getElementById('messages').innerHTML += '<p>'+data+'</p>'; //data needs to be manipulated on server but IDK if I need to on clientside as well
+	document.getElementById('messages').innerHTML += '<p class="pm">'+data+'</p>'; //data needs to be manipulated on server but IDK if I need to on clientside as well
 });
+
+function reset() {
+	document.getElementById('initform').style.display = 'block';
+	document.getElementById('Requests').style.display = 'block';
+	document.getElementById('chat').style.display = 'none';
+	document.getElementById('messages').innerHTML = '';
+}
 
 socket.on('dc', function() {
 	debug('Opponent has DC\'d');
-	//I guess do stuff
+	document.getElementById('chatbutton').innerHTML = 'Your opponent has disconnected. <button onclick="reset()">Find another battle</button>';
 });
 
 socket.on('Error', function(data) {
