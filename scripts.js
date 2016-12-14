@@ -122,6 +122,7 @@ function challenge(chalname) {
 		error('You cannot challenge someone while requesting a battle. Please cancel your request before challenging.');
 		return false;
 	}
+	//should also check they're not challenging someone else
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
 		error('Please enter your Friend Code before challenging.');
 		return false;
@@ -130,6 +131,8 @@ function challenge(chalname) {
 	document.getElementById('requesting').innerHTML = '<br>You are requesting a battle with '+chalname; //should put in a cancel challenge thing here too
 	document.getElementById('requesting').style.display = 'block';
 	document.getElementById('error').style.display = 'none';
+	opponent.Name = chalname;
+	opponent.FC = document.getElementById(chalname+'requesttablerow').cells[4].innerHTML;
 }
 var challenges = []; //code from here's less tested than is perhaps optimal (read: I'm 103% sure it doesn't work), need to look at it and possibly redesign
 socket.on('challenge', function(data) {
@@ -167,7 +170,7 @@ socket.on('accept', function() {
 	document.getElementById('Requests').style.display = 'none';
 	//get opponent's name, tier, FC etc. from table (?)
 	document.getElementById('chat').style.display = 'block';
-	document.getElementById('opponent_details').innerHTML = 'Your opponent\'s details will show here (when I\'ve coded that in)';
+	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
 });
 
 function decline(chalname) {
