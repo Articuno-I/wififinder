@@ -36,6 +36,7 @@ div {
 .pm {
 	text-align: left;
 }
-.pm:nth-child(even) {
+.ownpm {
+	text-align: left;
 	background-color: #e3e3ff;
 }
