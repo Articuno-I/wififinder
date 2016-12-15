@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
+	<meta charset="utf-8">
 	<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -22,15 +22,16 @@
 				<input type="Radio" name="Gen" value="7" id="sumo" checked="checked"> 7 (SuMo)
 				<input type="Radio" name="Gen" value="6"> 6 (XY/ORAS)
 			</div>
-			<div  id="XYonly" style="display:none"><input type="checkbox" id='XY'> Only use pokemon available in X and Y (no ORAS exclusives)</div>
+			<div  id="XYonly" style="display:none"><input type="checkbox" id="XY"> Only use pokemon available in X and Y (no ORAS exclusives)</div>
+			<div id="1337"><input type="checkbox" id="haxx" checked>Use legal hacks</div>
 			<div>Friend Code: <input type="text" id="FC" maxlength="12" size="12" /></div>
 			<div>Tier: <input type="text" id="tier" size="32" />
 			<button id="sendbutton" type="button" onclick="_submit()">Send</button></div>
 		</div>
 		<!-- Table displaying current requests -->
 		<table id="Requests" style="display:none"><tbody id="reqbody">
-			<tr><td class="tablehead" colspan="6">Current battle requests</td></tr>
-			<tr class="tablehead"><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td><!--challenge button--></td></tr>
+			<tr><td class="tablehead" colspan="7">Current battle requests</td></tr>
+			<tr class="tablehead"><td>User</td><td>Gen</td><td>Tier</td><td>Only XY mons?</td><td>Friend Code</td><td>Allow legal hacks?</td><td><!--challenge button--></td></tr>
 		</tbody></table>
 		<!-- Stuff for requesting & challenging & stuff -->
 		<div id="requesting" style="display:none"><br>
