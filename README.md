@@ -13,7 +13,7 @@ Difficulties:
 
 Things I'm working on currently:
 * Bug catching, there's bound to be 5000000 of them that will doubtless crash the server many times.
-* Compatibility, especially with some IE versions not telling the server when they dc which has potential to break things.
+* Compatibility, especially with some IE versions not telling the server when they dc which has potential to break things. (Or even flat-out not working? Kinda hard to test when I'm not running windows though...)
 
 Future considerations:
 * Some way of getting back to battles after a dc? IDK how this would work though.
