@@ -202,9 +202,9 @@ function chat() {
 socket.on('pm', function(data) {
 	var messagediv = document.getElementById('messages')
 	var notscrolled = messagediv.scrollHeight - messagediv.clientHeight <= messagediv.scrollTop + 1
-	messagediv.innerHTML += '<p class="pm">'+data+'</p>';
+	var pmclass = (data.indexOf('<b>You:</b>')==0) ? 'ownpm' : 'pm';
+	messagediv.innerHTML += '<p class='+pmclass+'>'+data+'</p>';
 	//code for scrolling to bottom was shamelessly stolen from stackoverflow user: dotnetCarpenter
-	//blame them if it doesn't work <_<
 	if (notscrolled) {
 		messagediv.scrollTop = messagediv.scrollHeight - messagediv.clientHeight;
 	}
