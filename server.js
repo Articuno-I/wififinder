@@ -74,9 +74,10 @@ io.on('connection', function(socket) {
 				return false;
 			}
 		}
-		var xypart; if (data.XY) {xypart = '&#x2611';} else {xypart = '&#x2610';}
-		io.emit('request',[sockname,data.Gen,data.Tier,xypart,data.FC]);
-		battlerequests.push({requester:socket,request:[sockname,data.Gen,data.Tier,xypart,data.FC]});
+		var xypart = data.XY ? '&#x2611' : '&#x2610';
+		var hackpart = data.Hacks ? '&#x2611' : '&#x2610';
+		io.emit('request',[sockname,data.Gen,data.Tier,xypart,data.FC,hackpart]);
+		battlerequests.push({requester:socket,request:[sockname,data.Gen,data.Tier,xypart,data.FC,hackpart]});
 	});
 	socket.on('cancelrequest', function() {
 		debug('received request cancellation');
