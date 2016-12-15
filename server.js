@@ -48,6 +48,9 @@ io.on('connection', function(socket) {
 			debug('name had illegal characters');
 			return false;
 		}
+		if (data.toLowerCase()=='you' || data.indexOf('challengerequest') != -1 || data.indexOf('requesttablerow') != -1) {//cases that might muck up later code
+			socket.emit('namenotaccepted','Why would you even want that name anyway? Geez.');
+		}
 		for (var i = 0; i < connections.length; i++) {
 			if (socket == connections[i].Socket) {
 				socket.emit('Error','This socket is already connected.');
@@ -156,8 +159,7 @@ io.on('connection', function(socket) {
 			return false;
 		}
 		getSocket(target).emit('pm','<b>'+sockname+':</b> '+data); //possibly add timestamps later, IDK
-		socket.emit('pm','<b>You:</b> '+data); //IDK if I'll need this, there's potential problems if not though (e.g. message order different)
-		//also IDK about having it say "You: " but owell
+		socket.emit('pm','<b>You:</b> '+data); //IDK if I need this, there's potential problems if not though (e.g. message order different)
 	});
 	socket.on('endgame', function() {
 		debug('game ended');
