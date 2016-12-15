@@ -18,10 +18,10 @@ function error(problem=false) {
 
 function xyshow() {
 //will probably remove this, all the "xy only" stuff could just be dealt with in the tier section
-	if (!document.getElementById("sumo").checked) {
-		document.getElementById("XYonly").style.display = "block";
+	if (!document.getElementById('sumo').checked) {
+		document.getElementById('XYonly').style.display = 'block';
 	} else {
-		document.getElementById("XYonly").style.display="none";
+		document.getElementById('XYonly').style.display='none';
 	}
 }
 
@@ -60,8 +60,9 @@ function _submit() {
 		error('Please cancel your challenge before requesting a battle.');
 	}
 	//step 1: get the data
-	var gen; if (document.getElementById('sumo').checked) {gen = 7;} else {gen = 6;} //could probably use a bool but meh
-	var xy; if (gen === 6 && document.getElementById('XY').checked) {xy = true;} else {xy = false;}
+	var gen = (document.getElementById('sumo').checked) ? 7 : 6; //could probably use a bool but meh
+	var xy = (gen === 6 && document.getElementById('XY').checked) ? true : false;
+	var hacks = document.getElementById('haxx').checked;
 	var fc = document.getElementById('FC').value;
 	var tier = document.getElementById('tier').value;
 	//step 1.5: make sure all the data's there
@@ -73,7 +74,7 @@ function _submit() {
 		error('Please enter a tier.');
 		return false;
 	}
-	var data = {Gen: gen, FC: fc, Tier: tier, XY: xy};
+	var data = {Gen: gen, FC: fc, Tier: tier, XY: xy, Hacks: hacks};
 	//step 2: actually send it
 	socket.emit('request', data);
 	//step 3, change what's on screen.
@@ -91,15 +92,16 @@ socket.on('request', function(data) {
 		if (navigator.userAgent.indexOf('MSIE') != -1) {
 			//IE compatibility. AFAIK all other browsers display the unicode correctly.
 			data[3] = data[3]=='&#x2611' ? 'yes' : 'no';
+			data[5] = data[5]=='&#x2611' ? 'yes' : 'no';
 		}
 		var row = document.getElementById('Requests').insertRow(-1);
 		row.id = data[0]+'requesttablerow';
 		var cell;
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 6; i++) {
 			cell = row.insertCell(i);
 			cell.innerHTML = data[i];
 		}
-		cell = row.insertCell(5);
+		cell = row.insertCell(6);
 		cell.innerHTML = '<button type="button" onclick="challenge(\''+data[0]+'\')">Challenge</button>';
 	}
 });
