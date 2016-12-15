@@ -137,14 +137,12 @@ io.on('connection', function(socket) {
 			debug('Error: pm had zero length');
 			return false;
 		}
-		for (var i = 0; i < data.length; i++) {
-			if (data[i] === '<' || data[i] === '"' || data[i] === "'" || data[i] === '&') {
-				//probably forgetting some, oh well
-				//also, need to work out how to escape these. In the meantime, they just won't work though.
-				debug('illegal characters (need to get this sorted)');
-				return false;
-			}
-		}
+		data = data //shamelessly stolen from stackoverflow user: bjornd
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#039;');
 		var target = false;
 		for (var i = 0; i < games.length; i++) {
 			if (games[i].players[0] === sockname) {
