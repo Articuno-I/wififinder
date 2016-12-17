@@ -212,7 +212,7 @@ io.on('connection', function(socket) {
 });
 
 //connect on a port
-var port = 8000
+var port = 8000;
 http.listen(port, function() {
 	console.log('[*] listening on *:'+port);
 });
