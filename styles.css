@@ -5,9 +5,10 @@ body {
 }
 table {
 	border-collapse: collapse;
-	width: 80%;
+	width: 90%;
 	text-align: center;
 	margin: auto;
+	/*Need to make this scroll if it's too long*/
 }
 table,th,td {
 	border: 1px solid black;
@@ -19,8 +20,13 @@ td {
 	padding: 10px;
 	border-radius: 10px;
 	margin: auto;
-	width: 50%;
+	width: 600px;
 	height: 600px;
+/* 
+I intend to put in js that will change these values if the screen's too small at some point
+However right now my phone's broken, so I'll put this in when I can test the results.
+Should be relatively easy to code using document.body.clientWidth etc. though.
+*/
 	background-color: #fcfcff;
 }
 div {
