@@ -18,8 +18,12 @@ function getSocket(name) {
 
 //debugging code
 var debugging = true;
-function debug(text) {
-	if (debugging) {console.log('debug: '+text);}
+function debug(text,sockname) {
+	if (!debugging) {return false;}
+	sockname ? console.log('[.] '+sockname+': '+text) : console.log('[.] Unnamed: '+text);
+}
+function error(text,sockname) {
+	sockname ? console.log('[!] '+sockname+': '+text) : console.log('[!] Unnamed: '+text);
 }
 
 //handle get requests
@@ -40,21 +44,22 @@ io.on('connection', function(socket) {
 	for (var i = 0; i < battlerequests.length; i++) {
 		socket.emit('request',battlerequests[i].request);
 	}
-	var sockname;
+	if (debugging) {console.log('[*] Unnamed: a user connected');}
+	var sockname = false;
 	socket.on('name', function(data) {
-		debug('received name');
+		debug('received name',false);
 		if (! /^[a-zA-Z0-9_ .,]+$/.test(data)) {
 			socket.emit('namenotaccepted','Please only use alphanumeric characters, spaces, and full stops.');
-			debug('name had illegal characters');
+			debug('name had illegal characters',false);
 			return false;
 		}
-		if (data.toLowerCase()=='you' || data.indexOf('challengerequest') != -1 || data.indexOf('requesttablerow') != -1) {//cases that might muck up later code
+		if (data.toLowerCase().indexOf('you')!=-1 || data.indexOf('challengerequest')!=-1 || data.indexOf('requesttablerow')!=-1 || data.toLowerCase().indexOf('unnamed')!=-1) {//cases that might muck up the code
 			socket.emit('namenotaccepted','Why would you even want that name anyway? Geez.');
 		}
 		for (var i = 0; i < connections.length; i++) {
 			if (socket == connections[i].Socket) {
 				socket.emit('Error','This socket is already connected.');
-				debug("socket was already connected so couldn't choose name");
+				error('name couldn\'t be chosen: already connected',false);
 				return false;
 			}
 			if (data == connections[i].Name) {
@@ -65,15 +70,15 @@ io.on('connection', function(socket) {
 		connections.push({Name: data, Socket: socket});
 		sockname = data;
 		socket.emit('nameaccepted', '');
-		debug('accepted name');
+		debug('accepted name',sockname);
 	});
 	socket.on('request', function(data) {
 		//stuff for battle requests. Something along these lines:
-		debug('received request');
+		debug('received request',sockname);
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {
 				socket.emit('Error','already requesting a game.');
-				debug('socket was already requesting a game');
+				debug('socket was already requesting a game',sockname);
 				return false;
 			}
 		}
@@ -83,14 +88,14 @@ io.on('connection', function(socket) {
 		battlerequests.push({requester:socket,request:[sockname,data.Gen,data.Tier,xypart,data.FC,hackpart]});
 	});
 	socket.on('cancelrequest', function() {
-		debug('received request cancellation');
+		debug('received request cancellation',sockname);
 		io.emit('cancelrequest', sockname); //have to get name serverside or you can cancel other people's requests
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {battlerequests.splice(i,1);}
 		}
 	});
 	socket.on('challenge', function(data) {
-		debug('received challenge');
+		debug('received challenge',sockname);
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {
 				socket.emit('decline',"Can't challenge someone while requesting a game.");
@@ -108,7 +113,7 @@ io.on('connection', function(socket) {
 		games.push({players:[sockname,data.toChallenge],playing:false});
 	});
 	socket.on('accept', function() {
-		debug('received accept');
+		debug('received accept',sockname);
 		for (var i = 0; i < battlerequests.length; i++) {
 			if (battlerequests[i].requester === socket) {
 				battlerequests.splice(i,1);
@@ -122,22 +127,22 @@ io.on('connection', function(socket) {
 				io.emit('cancelrequest',sockname);
 				return true;
 			}
-		} debug('Error: request not found');
+		} error('request not found',sockname);
 	});
 	socket.on('decline', function() {
-		debug('received decline');
+		debug('received decline',sockname);
 		for (var i = 0; i < games.length; i++) {
 			if (games[i].players[0] === sockname) {
 				getSocket(games[i].players[1]).emit('decline',''); //is the 2nd thing necessary? Should experiment with this probably
 				games.splice(i,1);
 				return true;
 			}
-		} debug('Error: request not found');
+		} error('request not found',sockname);
 	});
 	socket.on('pm', function(data) {
-		debug('received pm');
+		debug('received pm',sockname);
 		if (!data.length) {
-			debug('Error: pm had zero length');
+			debug('pm had zero length',sockname);
 			return false;
 		}
 		data = data //shamelessly stolen from stackoverflow user: bjornd
@@ -155,14 +160,14 @@ io.on('connection', function(socket) {
 			}
 		}
 		if (!target) {
-			console.log('Error: pm target not found!');
+			error('pm target not found!',sockname);
 			return false;
 		}
 		getSocket(target).emit('pm','<b>'+sockname+':</b> '+data); //possibly add timestamps later, IDK
 		socket.emit('pm','<b>You:</b> '+data); //IDK if I need this, there's potential problems if not though (e.g. message order different)
 	});
 	socket.on('endgame', function() {
-		debug('game ended');
+		debug('game ended',sockname);
 		for (var i = 0; i < games.length; i++) {
 			if (games[i].players[0] === sockname) {
 				getSocket(games[i].players[1]).emit('endgame','');
@@ -175,7 +180,7 @@ io.on('connection', function(socket) {
 	});
 	socket.on('disconnect', function() {
 		//This code doesn't trigger for some IE versions, IDK how to work around this though. Not sure if it works on Edge
-		debug('a user disconnected');
+		if (debugging) {console.log('[*] '+(sockname || 'Unnamed')+': User disconnected');}
 		for (var i = 0; i < connections.length; i++) {
 			if (connections[i].Socket === socket) {
 				connections.splice(i,1);
@@ -201,7 +206,8 @@ io.on('connection', function(socket) {
 	});
 });
 
-//connect on port 8000
-http.listen(8000, function() {
-	console.log('listening on *:8000');
+//connect on a port
+var port = 8000
+http.listen(port, function() {
+	console.log('[*] listening on *:'+port);
 });
