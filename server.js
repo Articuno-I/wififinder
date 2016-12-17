@@ -82,6 +82,11 @@ io.on('connection', function(socket) {
 				return false;
 			}
 		}
+		if (/[<>&"']/.test(data.Tier)) {
+			debug('Illegal characters in tier');
+			socket.emit('Error','Illegal characters in tier');
+			return false;
+		}
 		var xypart = data.XY ? '&#x2611' : '&#x2610';
 		var hackpart = data.Hacks ? '&#x2611' : '&#x2610';
 		io.emit('request',[sockname,data.Gen,data.Tier,xypart,data.FC,hackpart]);
