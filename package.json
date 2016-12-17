@@ -1,0 +1,16 @@
+{
+  "name": "wififinder",
+  "version": "0.2.1",
+  "description": "Pokemon wifi battle finder",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Articuno-I/wififinder"
+  },
+  "author": "DoW",
+  "dependencies": {
+    "express": "4.14.0",
+    "socket.io": "1.4.5"
+  },
+  "license": "MIT"
+}
