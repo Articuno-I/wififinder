@@ -1,10 +1,12 @@
 # wififinder
 
-Project: rebuilt smogon wifi battle finder, as seen here: https://www.youtube.com/watch?v=Lg3ivOcyx3w  
+####Currently visible [here](https://wififinder-articuno-i.c9users.io/) (sometimes)
+
+Project: rebuilt smogon wifi battle finder, as seen [here](https://www.youtube.com/watch?v=Lg3ivOcyx3w) 
 
 Basic idea:
-* Client-side page (probably all on a single page), takes info including FC, smogon login, what you want to play etc. and hands it to the server
-* Server (using node.js) handles requests, then when players match up it tells the client to display (a pre-existing) battle page including chat, FCs, opponent's smogon username and all that stuff or something.
+* Client-side page (single page that changes depending on where the user is), takes info including FC, smogon login, what you want to play etc. and hands it to the server
+* Server (using node.js) handles requests, moves data between clients e.g. telling everyone what requests are going on and moving pms between users.
 
 Difficulties:  
 * Smogon logins: basically impossible if you're not Chaos, afaik. I'm just using a "pick a name" system for now.
