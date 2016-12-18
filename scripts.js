@@ -14,14 +14,22 @@ function error(problem=false) {
 	var errordiv = document.getElementById('error');
 	errordiv.innerHTML = problem;
 	errordiv.style.display = 'block';
+	console.error(problem);
 }
 
 function xyshow() {
-//will probably remove this, all the "xy only" stuff could just be dealt with in the tier section
 	if (!document.getElementById('sumo').checked) {
 		document.getElementById('XYonly').style.display = 'block';
 	} else {
 		document.getElementById('XYonly').style.display='none';
+	}
+}
+
+function goto(id) {
+	if (id == 'fc2' && document.getElementById('FC-1').value.length === 4) {
+		document.getElementById('FC-2').focus();
+	} else if (id == 'fc3' && document.getElementById('FC-2').value.length === 4) {
+		document.getElementById('FC-3').focus();
 	}
 }
 
@@ -63,7 +71,7 @@ function _submit() {
 	var gen = (document.getElementById('sumo').checked) ? 7 : 6; //could probably use a bool but meh
 	var xy = (gen === 6 && document.getElementById('XY').checked) ? true : false;
 	var hacks = document.getElementById('haxx').checked;
-	var fc = document.getElementById('FC').value;
+	var fc = document.getElementById('FC-1').value + document.getElementById('FC-2').value + document.getElementById('FC-3').value;
 	var tier = document.getElementById('tier').value;
 	//step 1.5: make sure all the data's there
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
