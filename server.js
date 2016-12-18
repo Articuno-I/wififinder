@@ -17,13 +17,22 @@ function getSocket(name) {
 }
 
 //debugging code
+var date;
+function print(text) {
+	date = new Date();
+	var time = '';
+	(date.getHours() > 9) ? time += date.getHours() + ':' : time += '0' + date.getHours() + ':';
+	(date.getMinutes() > 9) ? time += date.getMinutes() + ':' : time += '0' + date.getMinutes() + ':';
+	(date.getSeconds() > 9) ? time += date.getSeconds() + ' ' : time += '0' + date.getSeconds() + ' ';
+	console.log(time + text);
+}
 var debugging = true;
 function debug(text,sockname) {
 	if (!debugging) {return false;}
-	sockname ? console.log('[.] '+sockname+': '+text) : console.log('[.] Unnamed: '+text);
+	sockname ? print('[.] '+sockname+': '+text) : print('[.] Unnamed: '+text);
 }
 function error(text,sockname) {
-	sockname ? console.log('[!] '+sockname+': '+text) : console.log('[!] Unnamed: '+text);
+	sockname ? print('[!] '+sockname+': '+text) : print('[!] Unnamed: '+text);
 }
 
 //handle get requests
@@ -44,7 +53,7 @@ io.on('connection', function(socket) {
 	for (var i = 0; i < battlerequests.length; i++) {
 		socket.emit('request',battlerequests[i].request);
 	}
-	if (debugging) {console.log('[*] Unnamed: a user connected');}
+	if (debugging) {print('[*] Unnamed: a user connected');}
 	var sockname = false;
 	socket.on('name', function(data) {
 		debug('received name',false);
@@ -185,7 +194,7 @@ io.on('connection', function(socket) {
 	});
 	socket.on('disconnect', function() {
 		//This code doesn't trigger for some IE versions, IDK how to work around this though. Not sure if it works on Edge
-		if (debugging) {console.log('[*] '+(sockname || 'Unnamed')+': User disconnected');}
+		if (debugging) {print('[*] '+(sockname || 'Unnamed')+': User disconnected');}
 		for (var i = 0; i < connections.length; i++) {
 			if (connections[i].Socket === socket) {
 				connections.splice(i,1);
@@ -211,8 +220,22 @@ io.on('connection', function(socket) {
 	});
 });
 
+//Handle server shutting down
+process.on('exit', function() {
+	print('[*] Disconnecting users');
+	io.emit('shutdown','');
+});
+process.on('SIGINT', function() {
+	process.exit();
+});
+process.on('uncaughtException', function(e) {
+	print('[!] Uncaught Exception...');
+	console.log(e.stack);
+	process.exit(99);
+});
+
 //connect on a port
 var port = 8000;
 http.listen(port, function() {
-	console.log('[*] listening on *:'+port);
+	print('[*] listening on *:'+port);
 });
