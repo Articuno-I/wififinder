@@ -1,6 +1,18 @@
 var socket = io();
 
 var opponent = {Name:'', FC:''};
+var stage = 'name';
+
+window.onkeypress = function(event) {
+	if (event.keyCode == 13) {
+		switch (stage) {
+			case 'name': sendname(); return true;
+			case 'form': _submit(); return true;
+			case 'pm': chat(); return true;
+			default: return false;
+		}
+	}
+}
 
 var debugging = true;
 function debug(text) {
@@ -33,8 +45,7 @@ function goto(id) {
 	}
 }
 
-var name; //global scope so I don't need to ask the server for it later maybe
-//IDK if I ever actually use this lol
+var name; //global scope so I don't need to ask the server for it later
 function sendname() {
 	debug('sending name');
 	name = document.getElementById('name').value;
@@ -51,7 +62,7 @@ function sendname() {
 }
 socket.on('namenotaccepted', function(data) {
 	debug("name wasn't accepted");
-	document.getElementById('name_info').innerHTML = data;
+	document.getElementById('name_info').innerHTML = data;//should really update this to use the error div
 });
 socket.on('nameaccepted', function() {
 	debug('name accepted');
@@ -60,6 +71,7 @@ socket.on('nameaccepted', function() {
 	document.getElementById('login_name').style.display = 'block';
 	document.getElementById('initform').style.display = 'block';
 	document.getElementById('Requests').style.display = 'block';
+	stage = 'form';
 });
 
 function _submit() {
@@ -92,6 +104,7 @@ function _submit() {
 	chaldiv.style.display = 'block';
 	document.getElementById('challenges').style.display = 'block';
 	document.getElementById('error').style.display = 'none';
+	stage = 'none';
 }
 socket.on('request', function(data) {
 	if (data[0] == name) { 
@@ -120,6 +133,7 @@ function cancelrequest() {
 	document.getElementById('requesting').innerHTML = '<br>';
 	document.getElementById('challenges').style.display = 'none';
 	document.getElementById('initform').style.display = 'block';
+	stage = 'form';
 }
 socket.on('cancelrequest', function(data) {
 	if (data != name) {
@@ -176,6 +190,7 @@ function accept(chalname) {
 	challenges = [];
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
+	stage = 'pm';
 }
 socket.on('accept', function() {
 	debug('challenge accepted, code past this point not yet finished');
@@ -185,6 +200,7 @@ socket.on('accept', function() {
 	//get opponent's name, tier, FC etc. from table (?)
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
+	stage = 'pm';
 });
 
 function decline(chalname) {
@@ -202,8 +218,9 @@ socket.on('decline', function() {
 });
 
 function chat() {
-	socket.emit('pm', document.getElementById('chatmsg').value);
-	document.getElementById('chatmsg').value = '';
+	var chatdiv = document.getElementById('chatmsg');
+	if (chatdiv.value.length) {socket.emit('pm', chatdiv.value);}
+	chatdiv.value = '';
 }
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
 //actually, do I *really* need to deal with it on the server, knowing that?
@@ -228,6 +245,7 @@ function reset() {
 	document.getElementById('messages').innerHTML = '';
 	document.getElementById('requesting').innerHTML = '<br>';
 	xyshow();
+	stage = 'form';
 }
 
 function endgame() {
@@ -243,6 +261,15 @@ socket.on('endgame', function(data) {
 		document.getElementById('endbutton').innerHTML = 'Your opponent has disconnected. <button onclick="reset()">Find another battle</button>';
 	} else {
 		document.getElementById('endbutton').innerHTML = 'Your opponent has ended the game. <button onclick="reset()">Find another battle</button>';
+	}
+});
+
+socket.on('shutdown', function() {
+	socket = false;
+	if (confirm('The server has shut down or restarted. Refresh the page?')) {
+		location.reload();
+	} else {
+		error('The server has shut down.');
 	}
 });
 
