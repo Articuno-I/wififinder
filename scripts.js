@@ -143,7 +143,7 @@ socket.on('cancelrequest', function(data) {
 });
 
 function challenge(chalname) {
-	var fc = document.getElementById('FC').value;
+	var fc = document.getElementById('FC-1').value + document.getElementById('FC-2').value + document.getElementById('FC-3').value;
 	if (document.getElementById('requesting').innerHTML.indexOf('You are requesting a Gen') != -1) {
 		//check they're not currently requesting a battle
 		//note: this is also checked serverside
