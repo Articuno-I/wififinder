@@ -19,7 +19,7 @@ function debug(text) {
 	if (debugging) {console.log('debug: '+text);}
 }
 
-function error(problem=false) {
+function error(problem) {
 	if (!problem) {
 		problem = 'An unknown error occurred.';
 	}
