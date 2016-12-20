@@ -9,9 +9,22 @@
 <body>
 	<script src="/socket.io/socket.io.js" type="text/javascript"></script>
 	<script src="/scripts.js" type="text/javascript"></script>
+	<!-- Menu of links to other places, to display at the top. -->
+	<table id="menu"><tbody id="mbody"><tr>
+		<td style="width:250px"><a href="http://play.pokemonshowdown.com/"><img src="http://pokemonshowdown.com/images/icon.png" alt="Pokemon Showdown!" title="Pokemon Showdown!" /></a></td>
+		<td style="width:100px"><a href="http://www.smogon.com/forums"><img src="http://www.smogon.com/media/zracknel-beta.svg.v.78IF94aNMRI1iVgcghQcHw" alt="Smogon University" title="Smogon University" /></a></td>
+		<td style="width:250px"><a href="http://www.smogon.com/dex/sm/pokemon"><img src="http://vignette1.wikia.nocookie.net/pokemon/images/1/1f/Pokedex_FRLG.png/revision/latest?cb=20100717083156" alt="Competitive Pokedex" title="Competitive Pokedex" /></a></td>
+	</tr><tr>
+		<td><a href="http://play.pokemonshowdown.com/">Test your teams!</a></td>
+		<td><a href="http://www.smogon.com/forums">Join the community!</a></td>
+		<td><a href="http://www.smogon.com/dex/sm/pokemon">Find out more!</a></td>
+		<!--IDK if www.smogon.com/dex/xy/pokemon would be a better link for now
+		At least this one won't go out of date quickly though. -->
+	</tbody></table>
 	<div id="battlefinder">
 		<!-- Login form & div to display name once logged in -->
 		<div id="login">
+			<p id="intro">Smogon wifi battle finder!</p>
 			Please choose a name: <input type="text" id="name" maxlength="20" />
 			<button id="choosename" onclick="sendname()">Choose</button>
 			<div id="name_info" style="display:none">Sending...</div>
@@ -26,7 +39,7 @@
 			</div>
 			<div  id="XYonly" style="display:none"><input type="checkbox" id="XY"> Only use pokemon available in X and Y (no ORAS exclusives)</div>
 			<div id="1337"><input type="checkbox" id="haxx" checked>Use legal hacks</div>
-			<div>Friend Code: <input type="text" id="FC-1" maxlength="4" size="4" onkeyup="goto('fc2')" />-<input type="text" id="FC-2" maxlength="4" size="4" onkeyup="goto('fc3')" />-<input type="text" id="FC-3" maxlength="4" size="4" /></div>
+			<div>Friend Code: <input type="text" id="FC" maxlength="12" size="12" /></div>
 			<div>Tier: <input type="text" id="tier" size="32" />
 			<button id="sendbutton" type="button" onclick="_submit()">Send</button></div>
 		</div>
