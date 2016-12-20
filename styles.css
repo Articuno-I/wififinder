@@ -1,25 +1,45 @@
 body {
-	padding-top: 25px;
+	padding-top: 15px;
 	background-color: #673ab7;
 	font: 13px/1.231 arial,helvetica,clean,sans-serif;
+	margin: auto;
+}
+#intro {
+	font-size: 20px;
+	font-weight: bold;
+	color: #673ab7;
 }
 table {
-	border-collapse: collapse;
-	width: 90%;
 	text-align: center;
 	margin: auto;
 	/*Need to make this scroll if it's too long*/
 }
-table,th,td {
+#Requests {
+	width: 90%;
+	border-collapse: collapse;
+}
+#Requests table, #Requests th, #Requests td {
 	border: 1px solid black;
 }
-td {
+#Requests td {
 	width: 15%;
+}
+#menu {
+	width: 600px;
+	font-weight: bold;
+	font-size: 15px;
+	padding-bottom: 10px;
+}
+#menu a{
+	text-decoration: none;
+	color: black;
+}
+img {
+	height: 100px;
 }
 #battlefinder {
 	padding: 10px;
 	border-radius: 10px;
-	margin: auto;
 	width: 600px;
 	height: 600px;
 /* 
@@ -28,6 +48,7 @@ However right now my phone's broken, so I'll put this in when I can test the res
 Should be relatively easy to code using document.body.clientWidth etc. though.
 */
 	background-color: #fcfcff;
+	overflow-y: auto;
 }
 div {
 	margin: auto;
@@ -45,7 +66,4 @@ div {
 .ownpm {
 	text-align: left;
 	background-color: #e3e3ff;
-}
-#FC-1, #FC-2, #FC-3 {
-	text-align: center;
 }
