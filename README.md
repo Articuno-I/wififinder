@@ -10,16 +10,15 @@ Basic idea:
 
 Difficulties:  
 * Smogon logins: basically impossible if you're not Chaos, afaik. I'm just using a "pick a name" system for now.
-* CSS, I'm terrible at making things look ok but hopefully someone else can fix that stuff.
-* Compatibility, specifically Internet Explorer is terrible and I haven't tested it on phone browsers or Safari yet.
+* CSS, I'm terrible at making things look ok, and I need to make it work for phone-sized browsers.
+* Compatibility - IE is horrendous, safari's not great, and I haven't tested on phones.
 
 Things I'm working on currently:
 * Bug catching, there's bound to be 5000000 of them that will doubtless crash the server many times.
-* Compatibility, especially with some IE versions not telling the server when they dc which has potential to break things. (Or even flat-out not working? Kinda hard to test when I'm not running windows though...)
-* Add more HTML. Probably put in a header with options like smogon frontpage, etc. Maybe a "current users" count?
+* Compatibility, specifically some browsers don't tell you when they dc, meaning names that are taken remain taken.
+* Perhaps add a current user count?
 
 Future considerations:
-* Some way of getting back to battles after a dc? IDK how this would work though.
 * Logging stuff: how many battles, what tiers, how long the wait times were, etc.
 * Chat moderation: Prevent certain phrases, perhaps log chats to check validity of complaints?
 * Log IPs?
