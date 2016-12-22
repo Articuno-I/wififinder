@@ -34,6 +34,12 @@ table {
 	text-decoration: none;
 	color: black;
 }
+.widemenu {
+	width: 250px;
+}
+.narrowmenu {
+	width: 100px;
+}
 img {
 	height: 100px;
 }
@@ -42,11 +48,6 @@ img {
 	border-radius: 10px;
 	width: 600px;
 	height: 600px;
-/* 
-I intend to put in js that will change these values if the screen's too small at some point
-However right now my phone's broken, so I'll put this in when I can test the results.
-Should be relatively easy to code using document.body.clientWidth etc. though.
-*/
 	background-color: #fcfcff;
 	overflow-y: auto;
 }
