@@ -1,18 +1,6 @@
 var socket = io();
 
 var opponent = {Name:'', FC:''};
-var stage = 'name';
-
-window.onkeypress = function(event) {
-	if (event.keyCode == 13) {
-		switch (stage) {
-			case 'name': sendname(); return true;
-			case 'form': _submit(); return true;
-			case 'pm': chat(); return true;
-			default: return false;
-		}
-	}
-}
 
 var debugging = true;
 function debug(text) {
@@ -71,7 +59,6 @@ socket.on('nameaccepted', function() {
 	document.getElementById('login_name').style.display = 'block';
 	document.getElementById('initform').style.display = 'block';
 	document.getElementById('Requests').style.display = 'block';
-	stage = 'form';
 });
 
 function _submit() {
@@ -104,7 +91,6 @@ function _submit() {
 	chaldiv.style.display = 'block';
 	document.getElementById('challenges').style.display = 'block';
 	document.getElementById('error').style.display = 'none';
-	stage = 'none';
 }
 socket.on('request', function(data) {
 	if (data[0] == name) { 
@@ -133,7 +119,6 @@ function cancelrequest() {
 	document.getElementById('requesting').innerHTML = '<br>';
 	document.getElementById('challenges').style.display = 'none';
 	document.getElementById('initform').style.display = 'block';
-	stage = 'form';
 }
 socket.on('cancelrequest', function(data) {
 	if (data != name) {
@@ -190,7 +175,6 @@ function accept(chalname) {
 	challenges = [];
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
-	stage = 'pm';
 }
 socket.on('accept', function() {
 	debug('challenge accepted, code past this point not yet finished');
@@ -200,7 +184,6 @@ socket.on('accept', function() {
 	//get opponent's name, tier, FC etc. from table (?)
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
-	stage = 'pm';
 });
 
 function decline(chalname) {
@@ -245,7 +228,6 @@ function reset() {
 	document.getElementById('messages').innerHTML = '';
 	document.getElementById('requesting').innerHTML = '<br>';
 	xyshow();
-	stage = 'form';
 }
 
 function endgame() {
@@ -265,6 +247,7 @@ socket.on('endgame', function(data) {
 });
 
 socket.on('shutdown', function() {
+	debug('Server has shut down.')
 	socket = false;
 	if (confirm('The server has shut down or restarted. Refresh the page?')) {
 		location.reload();
