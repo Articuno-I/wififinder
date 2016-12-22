@@ -2,6 +2,7 @@ var socket = io();
 
 var opponent = {Name:'', FC:''};
 
+//debugging functions
 var debugging = true;
 function debug(text) {
 	if (debugging) {console.log('debug: '+text);}
@@ -17,6 +18,7 @@ function error(problem) {
 	console.error(problem);
 }
 
+//simple html modification
 function xyshow() {
 	if (!document.getElementById('sumo').checked) {
 		document.getElementById('XYonly').style.display = 'block';
@@ -33,6 +35,28 @@ function goto(id) {
 	}
 }
 
+//handle small screen sizes
+document.body.onload = function() {
+	var _width = document.body.clientWidth;
+	if (_width < 620) {
+		document.getElementById('battlefinder').style.width = (_width - 30)+'px';
+		var elements = document.getElementsByClassName('widemenu');
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.width = (_width/3)+'px';
+		}
+		elements = document.getElementsByClassName('narrowmenu');
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.width = (_width/3)+'px';
+		}
+		elements = document.getElementsByClassName('menuimg');
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.height = (_width/4)+'px';
+		}
+	/*IDK whether to change element heights or font sizes, will have to test later.*/
+	}
+}
+
+//communication with server
 var name; //global scope so I don't need to ask the server for it later
 function sendname() {
 	debug('sending name');
