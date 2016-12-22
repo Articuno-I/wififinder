@@ -25,7 +25,7 @@
 		<!-- Login form & div to display name once logged in -->
 		<div id="login">
 			<p id="intro">Smogon wifi battle finder!</p>
-			Please choose a name: <input type="text" id="name" maxlength="20" />
+			Please choose a name: <input type="text" id="name" maxlength="20" onkeyup="if(event.keyCode==13){sendname();}" />
 			<button id="choosename" onclick="sendname()">Choose</button>
 			<div id="name_info" style="display:none">Sending...</div>
 		</div>
@@ -40,7 +40,7 @@
 			<div  id="XYonly" style="display:none"><input type="checkbox" id="XY"> Only use pokemon available in X and Y (no ORAS exclusives)</div>
 			<div id="1337"><input type="checkbox" id="haxx" checked>Use legal hacks</div>
 			<div>Friend Code: <input type="text" id="FC-1" maxlength="4" size="4" onkeyup="goto('fc2')" />-<input type="text" id="FC-2" maxlength="4" size="4" onkeyup="goto('fc3')" />-<input type="text" id="FC-3" maxlength="4" size="4" /></div>
-			<div>Tier: <input type="text" id="tier" size="32" />
+			<div>Tier: <input type="text" id="tier" size="32" onkeyup="if(event.keyCode==13){_submit();}" />
 			<button id="sendbutton" type="button" onclick="_submit()">Send</button></div>
 		</div>
 		<!-- Table displaying current requests -->
@@ -59,7 +59,7 @@
 		<div id="chat" style="display:none">
 			<div id="opponent_details"></div>
 			<div id="messages"></div>
-			<div id="chatbutton">Chat: <input type="text" id="chatmsg" size="50" /><button onclick="chat()">Chat</button></div>
+			<div id="chatbutton">Chat: <input type="text" id="chatmsg" size="50" onkeyup="if(event.keyCode==13){chat();}"/><button onclick="chat()">Chat</button></div>
 			<div id="endbutton"><button type="button" id="finished" onclick="endgame()">End game room</button></div>
 		</div>
 	</div>
