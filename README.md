@@ -10,12 +10,12 @@ Basic idea:
 
 Difficulties:  
 * Smogon logins: basically impossible if you're not Chaos, afaik. I'm just using a "pick a name" system for now.
-* CSS, I'm terrible at making things look ok, and I need to make it work for phone-sized browsers.
+* CSS - mostly dealt with now, but may look bad on some phones, IDK. I'm always open to ways to make it look better, too.
 * Compatibility - IE is horrendous, safari's not great, and I haven't tested on phones.
 
 Things I'm working on currently:
-* Bug catching, there's bound to be 5000000 of them that will doubtless crash the server many times.
-* Compatibility, specifically some browsers don't tell you when they dc, meaning names that are taken remain taken.
+* Bug catching, I think I've got most of them but doubtless you can crash the server if you try hard enough.
+* Compatibility, specifically some browsers don't tell you when they dc, meaning names that are taken remain taken. Seems to be a problem with socket.io (see [here](https://github.com/socketio/socket.io/issues/635)), I'll try to find a way round it though..
 * Perhaps add a current user count?
 
 Future considerations:
