@@ -91,8 +91,13 @@ io.on('connection', function(socket) {
 				return false;
 			}
 		}
+		if (data.FC.match(/^[0-9]-+$/) || data.FC.length != 14) {
+			debug('Illegal FC',sockname);
+			socket.emit('Error','Illegal FC');
+			return false;
+		}
 		if (/[<>&"']/.test(data.Tier)) {
-			debug('Illegal characters in tier');
+			debug('Illegal characters in tier',sockname);
 			socket.emit('Error','Illegal characters in tier');
 			return false;
 		}
@@ -121,6 +126,11 @@ io.on('connection', function(socket) {
 				socket.emit('Error','Already challenging someone or in a game');
 				return false;
 			}
+		}
+		if (data.FC.match(/^[0-9]-+$/) || data.FC.length != 14) {
+			debug('Illegal FC',sockname);
+			socket.emit('Error','Illegal FC');
+			return false;
 		}
 		var toChallenge = getSocket(data.toChallenge);
 		toChallenge.emit('challenge', {user:sockname, FC:data.FC});
