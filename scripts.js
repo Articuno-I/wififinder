@@ -47,18 +47,22 @@ document.body.onload = function() {
 	/*IDK whether to change element heights or font sizes, will have to test later.*/
 	}
 	//make the fc include dashes, credit: Joim
-	document.getElementById('fc').addEventListener('keyup', function() {
-	    var number = document.getElementById('fc').value;
-	    var newNumber = '';
-	    for (var i = 0; i < number.length; i++) {
-	    	if (i === 5 || i === 10) {
-	    		if (number[i] === '-') newNumber += '-';
-	    		else newNumber += '-' + number[i];
-		    } else if (number[i].match(/[0-9]+$/)) newNumber += number[i];
-	    }
-		if (newNumber.length === 4 || newNumber.length === 9) newNumber += '-';
-	    document.getElementById('fc').value = newNumber;
-	});
+	try {
+		document.getElementById('fc').addEventListener('keyup', function() {
+		    var number = document.getElementById('fc').value;
+		    var newNumber = '';
+		    for (var i = 0; i < number.length; i++) {
+			if (i === 5 || i === 10) {
+				if (number[i] === '-') newNumber += '-';
+				else newNumber += '-' + number[i];
+			    } else if (number[i].match(/[0-9]+$/)) newNumber += number[i];
+		    }
+			if (newNumber.length === 4 || newNumber.length === 9) newNumber += '-';
+		    document.getElementById('fc').value = newNumber;
+		});
+	} catch (err) {
+		console.error('Major error detected: You appear to be using Internet Explorer. Suggested patch: https://www.mozilla.org/en-US/firefox/new/');
+	}
 };
 
 //communication with server
