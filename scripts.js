@@ -59,7 +59,7 @@ document.body.onload = function() {
 		if (newNumber.length === 4 || newNumber.length === 9) newNumber += '-';
 	    document.getElementById('fc').value = newNumber;
 	});
-}
+};
 
 //communication with server
 var name; //global scope so I don't need to ask the server for it later
@@ -219,7 +219,7 @@ function decline(chalname) {
 	debug('declining');
 	socket.emit('decline','');
 	for (var i = 0; i < challenges.length; i++) {
-		if (challenges[i].challenger === chalname) {challenges.splice(i,1);}
+		if (challenges[i].challenger === chalname) challenges.splice(i,1);
 	}
 	document.getElementById(chalname+'challengerequest').outerHTML = '';
 }
@@ -237,8 +237,8 @@ function chat() {
 //Note: all the 'to' and 'from' stuff _needs_ to be dealt with on the server, or I'm just asking for someone to make zarel pm chaos with "im gay lol"
 //actually, do I *really* need to deal with it on the server, knowing that?
 socket.on('pm', function(data) {
-	var messagediv = document.getElementById('messages')
-	var notscrolled = messagediv.scrollHeight - messagediv.clientHeight <= messagediv.scrollTop + 1
+	var messagediv = document.getElementById('messages');
+	var notscrolled = messagediv.scrollHeight - messagediv.clientHeight <= messagediv.scrollTop + 1;
 	var pmclass = (data.indexOf('<b>You:</b>')==0) ? 'ownpm' : 'pm';
 	messagediv.innerHTML += '<p class='+pmclass+'>'+data+'</p>';
 	//code for scrolling to bottom was shamelessly stolen from stackoverflow user: dotnetCarpenter
@@ -253,7 +253,7 @@ function reset() {
 	document.getElementById('Requests').style.display = 'block';
 	document.getElementById('chatbutton').style.display = 'block';
 	document.getElementById('chat').style.display = 'none';
-	document.getElementById('endbutton').innerHTML = '<button type="button" id="finished" onclick="endgame()">End game room</button>'
+	document.getElementById('endbutton').innerHTML = '<button type="button" id="finished" onclick="endgame()">End game room</button>';
 	document.getElementById('messages').innerHTML = '';
 	document.getElementById('requesting').innerHTML = '<br>';
 	xyshow();
