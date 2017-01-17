@@ -27,14 +27,6 @@ function xyshow() {
 	}
 }
 
-function goto(id) {
-	if (id == 'fc2' && document.getElementById('FC-1').value.length === 4) {
-		document.getElementById('FC-2').focus();
-	} else if (id == 'fc3' && document.getElementById('FC-2').value.length === 4) {
-		document.getElementById('FC-3').focus();
-	}
-}
-
 //handle small screen sizes
 document.body.onload = function() {
 	var _width = document.body.clientWidth;
@@ -54,6 +46,19 @@ document.body.onload = function() {
 		}
 	/*IDK whether to change element heights or font sizes, will have to test later.*/
 	}
+	//make the fc include dashes, credit: Joim
+	document.getElementById('fc').addEventListener('keyup', function() {
+	    var number = document.getElementById('fc').value;
+	    var newNumber = '';
+	    for (var i = 0; i < number.length; i++) {
+	    	if (i === 5 || i === 10) {
+	    		if (number[i] === '-') newNumber += '-';
+	    		else newNumber += '-' + number[i];
+		    } else if (number[i].match(/[0-9]+$/)) newNumber += number[i];
+	    }
+		if (newNumber.length === 4 || newNumber.length === 9) newNumber += '-';
+	    document.getElementById('fc').value = newNumber;
+	});
 }
 
 //communication with server
@@ -94,7 +99,7 @@ function _submit() {
 	var gen = (document.getElementById('sumo').checked) ? 7 : 6; //could probably use a bool but meh
 	var xy = (gen === 6 && document.getElementById('XY').checked) ? true : false;
 	var hacks = document.getElementById('haxx').checked;
-	var fc = document.getElementById('FC-1').value + document.getElementById('FC-2').value + document.getElementById('FC-3').value;
+	var fc = document.getElementById('fc').value;
 	var tier = document.getElementById('tier').value;
 	//step 1.5: make sure all the data's there
 	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
@@ -152,7 +157,7 @@ socket.on('cancelrequest', function(data) {
 });
 
 function challenge(chalname) {
-	var fc = document.getElementById('FC-1').value + document.getElementById('FC-2').value + document.getElementById('FC-3').value;
+	var fc = document.getElementById('fc').value;
 	if (document.getElementById('requesting').innerHTML.indexOf('You are requesting a Gen') != -1) {
 		//check they're not currently requesting a battle
 		//note: this is also checked serverside
