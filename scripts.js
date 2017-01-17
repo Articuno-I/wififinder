@@ -52,9 +52,9 @@ document.body.onload = function() {
 		    var number = document.getElementById('fc').value;
 		    var newNumber = '';
 		    for (var i = 0; i < number.length; i++) {
-			if (i === 5 || i === 10) {
-				if (number[i] === '-') newNumber += '-';
-				else newNumber += '-' + number[i];
+		    	if (i === 5 || i === 10) {
+		    		if (number[i] === '-') newNumber += '-';
+		    		else newNumber += '-' + number[i];
 			    } else if (number[i].match(/[0-9]+$/)) newNumber += number[i];
 		    }
 			if (newNumber.length === 4 || newNumber.length === 9) newNumber += '-';
@@ -106,7 +106,7 @@ function _submit() {
 	var fc = document.getElementById('fc').value;
 	var tier = document.getElementById('tier').value;
 	//step 1.5: make sure all the data's there
-	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
+	if (!(fc.length == 14 && !fc.match(/^[0-9]-+$/))) {
 		error('Please input a valid Friend Code.');
 		return false;
 	}
@@ -169,8 +169,8 @@ function challenge(chalname) {
 		return false;
 	}
 	//should also check they're not challenging someone else
-	if (!(fc.length == 12 && fc == fc.match(/^[0-9]+$/))) {
-		error('Please enter your Friend Code before challenging.');
+	if (!(fc.length == 14 && !fc.match(/^[0-9]-+$/))) {
+		error('Please input a valid Friend Code.');
 		return false;
 	}
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
