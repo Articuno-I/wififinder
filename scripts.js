@@ -280,7 +280,7 @@ socket.on('endgame', function(data) {
 });
 
 socket.on('shutdown', function() {
-	debug('Server has shut down.')
+	debug('Server has shut down.');
 	socket = false;
 	if (confirm('The server has shut down or restarted. Refresh the page?')) {
 		location.reload();
