@@ -107,7 +107,7 @@ function _submit() {
 	var tier = document.getElementById('tier').value;
 	//step 1.5: make sure all the data's there
 	if (!(fc.length == 14 && !fc.match(/^[0-9]-+$/))) {
-		error('Please input a valid Friend Code.');
+		error('Please input a valid Friend Code. Format: XXXX-XXXX-XXXX (where X is a number).');
 		return false;
 	}
 	if (!tier.length) {
@@ -170,7 +170,7 @@ function challenge(chalname) {
 	}
 	//should also check they're not challenging someone else
 	if (!(fc.length == 14 && !fc.match(/^[0-9]-+$/))) {
-		error('Please input a valid Friend Code.');
+		error('Please input a valid Friend Code. Format: XXXX-XXXX-XXXX (where X is a number).');
 		return false;
 	}
 	socket.emit('challenge', {toChallenge: chalname, FC: fc});
@@ -214,7 +214,7 @@ socket.on('accept', function() {
 	document.getElementById('requesting').style.display = 'none';
 	document.getElementById('initform').style.display = 'none';
 	document.getElementById('Requests').style.display = 'none';
-	//get opponent's name, tier, FC etc. from table (?)
+	//get opponent's name, tier, FC etc. from table?
 	document.getElementById('chat').style.display = 'block';
 	document.getElementById('opponent_details').innerHTML = 'Your opponent is <b>'+opponent.Name+'</b>. Their Friend Code is <b>'+opponent.FC+'</b>.';
 });
